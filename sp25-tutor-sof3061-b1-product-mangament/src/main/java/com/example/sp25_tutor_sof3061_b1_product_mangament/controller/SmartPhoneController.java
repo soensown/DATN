@@ -24,7 +24,7 @@ public class SmartPhoneController {
     @PostMapping
     public SmartPhone addNew(@RequestBody SmartPhone smartPhone) {
         // Id = null => Them moi
-        smartPhone.setId(null);
+//        smartPhone.setId(null);
         return repository.save(smartPhone);
     }
 
@@ -32,7 +32,7 @@ public class SmartPhoneController {
     @PutMapping("/{id}")
     public SmartPhone updateById(@PathVariable("id") Long id,
                                  @RequestBody SmartPhone smartPhone) {
-        smartPhone.setId(id); // Id khong ton tai = Them moi
+//        smartPhone.setId(id); // Id khong ton tai = Them moi
         return repository.save(smartPhone);
     }
 
