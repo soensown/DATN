@@ -38,4 +38,9 @@ public class discountsController {
         discountsRepo.save(discounts);
         return "redirect:/discounts/hienThi";
     }
+    @GetMapping("/search")
+    public String search(Model model, @RequestParam String type) {
+        model.addAttribute("listDiscounts", discountsRepo.searchByType(type));
+        return "/page/discounts"; // forward đến trang Thymeleaf
+    }
 }
