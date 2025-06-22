@@ -18,7 +18,7 @@ public class discounts {
     @Id
     private String id;
     @Column(name = "discount_value")
-    private Integer materialName;
+    private Integer discountName;
     @Column(name = "discount_type")
     private String discountType;
     @Column(name = "start_date")
