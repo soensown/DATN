@@ -36,7 +36,7 @@ public class products {
     private Boolean isSpecial;
     @ManyToOne
     @JoinColumn(name = "brand_id")
-    private brands brands;
+    private com.example.datn.Model.brands brands;
     @Column(name = "weight")
     private BigDecimal weight;
     @Column(name = "created_date")

@@ -9,33 +9,45 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Optional;
+
+
 @Controller
 @RequestMapping("/sizes")
 public class sizesController {
     @Autowired
     sizesRepository sizesRepo;
 
-    @GetMapping("/hienThi")
-    public String hienThi(Model model){
-        model.addAttribute("listSizes",sizesRepo.findAll());
-        return "...";//link này mapping fontend file html
-    }
+@GetMapping("/hienThi")
+public String hienThi(Model model) {
+    model.addAttribute("listSizes", sizesRepo.findAll());
+    return "/page/Sizes";
+}
 
-    @GetMapping("/delete")
-    public String delete(@RequestParam()Integer id){
-        sizesRepo.deleteById(id);
-        return "redirect:/sizes/hienThi";
-    }
-
-    @GetMapping("/update/{id}")
-    public String viewUpdate(Model model,@PathVariable Integer id){
-        model.addAttribute("listSizes",sizesRepo.findById(id).get());
-        return "...";//link này mapping fontend file html
-    }
+@GetMapping("/delete/{id}")
+public String delete(@PathVariable("id") Integer id) {
+    sizesRepo.deleteById(id);
+    return "redirect:/sizes/hienThi";
+}
 
     @PostMapping("/add")
-    public String add(sizes sizes){
-        sizesRepo.save(sizes);
+    public String add(@ModelAttribute sizes size) {
+        sizesRepo.save(size);
         return "redirect:/sizes/hienThi";
+    }
+
+    @PostMapping("/update")
+    public String update(@ModelAttribute sizes size) {
+        sizesRepo.save(size);
+        return "redirect:/sizes/hienThi";
+    }
+
+    @GetMapping("/search")
+    public String search(Model model, @RequestParam("keyword") String keyword) {
+        model.addAttribute("listSizes", sizesRepo.findAll().stream()
+                .filter(s -> s.getSize().toLowerCase().contains(keyword.toLowerCase()))
+                .toList());
+        return "/page/Sizes";
     }
 }
