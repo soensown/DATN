@@ -15,11 +15,21 @@ import lombok.Setter;
 @AllArgsConstructor
 
 public class brands {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Integer id;
+//    @Column(name = "brand_name")
+//    private String bradName;
+//    @Column(name = "logo")
+//    private String brandLogo;
+@Id
+@GeneratedValue(strategy = GenerationType.IDENTITY)
+@Column(name = "brand_id")
+private Integer id;
+
     @Column(name = "brand_name")
-    private String bradName;
+    private String brandName;
+
     @Column(name = "logo")
     private String brandLogo;
 }
