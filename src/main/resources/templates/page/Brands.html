@@ -10,32 +10,32 @@
 
 <nav th:replace="~{/header/Navbar}"></nav>
 
-<!-- Form tìm kiếm -->
-<div class="container py-4 d-flex justify-content-center">
-    <div class="col-lg-8" style="padding-top: 100px">
+<div class="container py-4 d-flex justify-content-center" style="padding-top: 100px;">
+    <div class="col-lg-8">
         <div class="card shadow">
-            <div class="p-3">
-                <form action="/brands/search" method="get" class="d-flex">
-                    <input type="text" class="form-control me-2" name="keyword" placeholder="Tìm kiếm tên thương hiệu...">
+            <!-- Tìm kiếm -->
+            <div class="p-3 border-bottom">
+                <form th:action="@{/brands/hienThi}" method="get" class="d-flex">
+                    <input type="text" class="form-control me-2" name="keyword" placeholder="Tìm kiếm tên thương hiệu..." th:value="${keyword}">
                     <button type="submit" class="btn btn-outline-success">Tìm kiếm</button>
                 </form>
             </div>
 
+            <!-- Form thêm thương hiệu -->
             <div class="card-header bg-primary text-white">
                 <h5 class="mb-0">Thêm Thương Hiệu</h5>
             </div>
-
-            <form action="/brands/add" method="post" class="card-body needs-validation" novalidate>
+            <form th:action="@{/brands/add}" method="post" enctype="multipart/form-data" class="card-body needs-validation" novalidate>
                 <div class="mb-3">
                     <label class="form-label">Tên thương hiệu</label>
                     <input type="text" class="form-control" name="brandName" required>
+                    <div class="invalid-feedback">Vui lòng nhập tên thương hiệu.</div>
                 </div>
-c
                 <div class="mb-3">
-                    <label class="form-label">Logo (link)</label>
-                    <input type="text" class="form-control" name="brandLogo">
+                    <label class="form-label">Logo (tệp ảnh)</label>
+                    <input type="file" class="form-control" name="logoFile" accept="image/*" required>
+                    <div class="invalid-feedback">Vui lòng chọn file ảnh logo.</div>
                 </div>
-
                 <div class="d-flex justify-content-end gap-2">
                     <button type="submit" class="btn btn-primary">Thêm thương hiệu</button>
                 </div>
@@ -44,8 +44,8 @@ c
     </div>
 </div>
 
-<!-- Bảng danh sách thương hiệu -->
-<div class="container" style="padding-top: 100px">
+<!-- Danh sách thương hiệu -->
+<div class="container" style="padding-top: 40px;">
     <table class="table table-hover align-middle">
         <thead class="table-light">
         <tr>
@@ -57,20 +57,18 @@ c
         </tr>
         </thead>
         <tbody>
-        <tr th:each="b : ${listBrands}">
+        <tr th:each="b : ${pageBrands.content}">
             <td th:text="${b.id}"></td>
             <td th:text="${b.brandName}"></td>
             <td>
-                <img th:src="${b.brandLogo}" alt="Logo" width="50" height="50">
+                <img th:src="@{'/uploads/' + ${b.brandLogo}}" alt="Logo" width="50" height="50">
             </td>
             <td>
                 <a th:href="@{'/brands/delete/' + ${b.id}}" class="btn btn-danger btn-sm">Xoá</a>
             </td>
             <td>
-                <button type="button"
-                        class="btn btn-warning btn-sm text-white"
-                        data-bs-toggle="modal"
-                        data-bs-target="#editModal"
+                <button type="button" class="btn btn-warning btn-sm text-white"
+                        data-bs-toggle="modal" data-bs-target="#editModal"
                         th:attr="data-id=${b.id}, data-name=${b.brandName}, data-logo=${b.brandLogo}">
                     Sửa
                 </button>
@@ -78,31 +76,50 @@ c
         </tr>
         </tbody>
     </table>
+
+    <!-- Phân trang -->
+    <div class="d-flex justify-content-center mt-4" th:if="${totalPages > 1}">
+        <nav>
+            <ul class="pagination mb-0">
+                <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                    <a class="page-link" th:href="@{/brands/hienThi(page=${currentPage - 1}, keyword=${keyword})}">Trước</a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:classappend="${i == currentPage} ? 'active'">
+                    <a class="page-link" th:text="${i + 1}" th:href="@{/brands/hienThi(page=${i}, keyword=${keyword})}"></a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                    <a class="page-link" th:href="@{/brands/hienThi(page=${currentPage + 1}, keyword=${keyword})}">Tiếp</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
 </div>
 
-<!-- Modal sửa thương hiệu -->
+<!-- Modal sửa -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form action="/brands/update" method="post">
+            <form th:action="@{/brands/update}" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
                 <div class="modal-header">
                     <h5 class="modal-title">Chỉnh sửa Thương Hiệu</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" name="id" id="brandId">
                     <div class="mb-3">
                         <label class="form-label">Tên thương hiệu</label>
                         <input type="text" class="form-control" name="brandName" id="brandName" required>
+                        <div class="invalid-feedback">Vui lòng nhập tên thương hiệu.</div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Logo</label>
-                        <input type="text" class="form-control" name="brandLogo" id="brandLogo">
+                        <label class="form-label">Logo (chọn file mới nếu muốn thay đổi)</label>
+                        <input type="file" class="form-control" name="logoFile" accept="image/*">
+                        <small class="text-muted">Để trống nếu giữ logo cũ.</small>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
                     <button type="submit" class="btn btn-primary">Lưu</button>
                 </div>
             </form>
@@ -117,8 +134,25 @@ c
         const button = event.relatedTarget;
         document.getElementById('brandId').value = button.getAttribute('data-id');
         document.getElementById('brandName').value = button.getAttribute('data-name');
-        document.getElementById('brandLogo').value = button.getAttribute('data-logo');
+        // Không gán logo vào input file
     });
+</script>
+
+<!-- Validate form Bootstrap -->
+<script>
+    (() => {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
 </script>
 
 </body>

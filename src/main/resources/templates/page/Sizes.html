@@ -8,40 +8,46 @@
 </head>
 <body>
 
+<!-- NAVBAR -->
 <nav th:replace="~{/header/Navbar}"></nav>
 
-<!-- Form thêm size -->
-<div class="container py-4 d-flex justify-content-center">
-    <div class="col-lg-8" style="padding-top: 100px">
+<!-- ======= FORM TÌM KIẾM & THÊM SIZE ======= -->
+<div class="container py-4 d-flex justify-content-center" style="padding-top:100px;">
+    <div class="col-lg-8">
         <div class="card shadow">
-            <div class="p-3">
-                <form action="/sizes/search" method="get" class="d-flex">
-                    <input type="text" class="form-control me-2" name="keyword" placeholder="Tìm kiếm tên size...">
+            <!-- Form tìm kiếm -->
+            <div class="p-3 border-bottom">
+                <form th:action="@{/sizes/hienThi}" method="get" class="d-flex">
+                    <input type="text" class="form-control me-2" name="keyword"
+                           th:value="${keyword}" placeholder="Tìm kiếm tên size...">
                     <button type="submit" class="btn btn-outline-success">Tìm kiếm</button>
                 </form>
             </div>
-
+            <!-- Form thêm size -->
             <div class="card-header bg-success text-white">
                 <h5 class="mb-0">Thêm Size</h5>
             </div>
-
-            <form action="/sizes/add" method="post" class="card-body needs-validation" novalidate>
-                <div class="mb-3">
-                    <label class="form-label">Tên Size</label>
-                    <input type="text" class="form-control" name="size" required>
-                    <div class="invalid-feedback">Vui lòng nhập tên size.</div>
-                </div>
-
-                <div class="d-flex justify-content-end gap-2">
-                    <button type="submit" class="btn btn-success">Thêm size</button>
-                </div>
-            </form>
+            <div class="card-body">
+                <!-- THÔNG BÁO -->
+                <div th:if="${errorMessage}" class="alert alert-danger mb-3" th:text="${errorMessage}"></div>
+                <div th:if="${successMessage}" class="alert alert-success mb-3" th:text="${successMessage}"></div>
+                <form th:action="@{/sizes/add}" method="post" class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label class="form-label">Tên Size</label>
+                        <input type="text" class="form-control" name="size" required>
+                        <div class="invalid-feedback">Vui lòng nhập tên size.</div>
+                    </div>
+                    <div class="d-flex justify-content-end gap-2">
+                        <button type="submit" class="btn btn-success">Thêm size</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Bảng danh sách size -->
-<div class="container" style="padding-top: 100px">
+<!-- ======= BẢNG DANH SÁCH SIZE ======= -->
+<div class="container" style="padding-top:40px;">
     <table class="table table-hover align-middle">
         <thead class="table-light">
         <tr>
@@ -52,45 +58,63 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="s : ${listSizes}">
+        <tr th:each="s : ${pageSizes.content}">
             <td th:text="${s.id}"></td>
             <td th:text="${s.size}"></td>
             <td>
                 <a th:href="@{'/sizes/delete/' + ${s.id}}" class="btn btn-danger btn-sm">Xoá</a>
             </td>
             <td>
-                <button type="button"
-                        class="btn btn-warning btn-sm text-white"
-                        data-bs-toggle="modal"
-                        data-bs-target="#editModal"
-                        th:attr="data-id=${s.id}, data-size=${s.size}">
-                    Sửa
-                </button>
+                <button type="button" class="btn btn-warning btn-sm text-white"
+                        data-bs-toggle="modal" data-bs-target="#editModal"
+                        th:attr="data-id=${s.id}, data-size=${s.size}">Sửa</button>
             </td>
         </tr>
         </tbody>
     </table>
+
+    <!-- ======= PHÂN TRANG ======= -->
+    <div class="d-flex justify-content-center mt-4" th:if="${totalPages > 1}">
+        <nav>
+            <ul class="pagination mb-0">
+                <!-- Nút Previous -->
+                <li class="page-item" th:classappend="${currentPage == 0}? 'disabled'">
+                    <a class="page-link" th:href="@{/sizes/hienThi(page=${currentPage - 1}, keyword=${keyword})}">Trước</a>
+                </li>
+                <!-- Các trang -->
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                    th:classappend="${i == currentPage}? 'active'">
+                    <a class="page-link" th:text="${i + 1}"
+                       th:href="@{/sizes/hienThi(page=${i}, keyword=${keyword})}"></a>
+                </li>
+                <!-- Nút Next -->
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1}? 'disabled'">
+                    <a class="page-link" th:href="@{/sizes/hienThi(page=${currentPage + 1}, keyword=${keyword})}">Tiếp</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
 </div>
 
-<!-- Modal sửa size -->
+<!-- ======= MODAL SỬA SIZE ======= -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form action="/sizes/update" method="post">
+            <form th:action="@{/sizes/update}" method="post" class="needs-validation" novalidate>
                 <div class="modal-header">
                     <h5 class="modal-title">Chỉnh sửa Size</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <input type="hidden" name="id" id="sizeId">
                     <div class="mb-3">
                         <label class="form-label">Tên size</label>
                         <input type="text" class="form-control" name="size" id="sizeName" required>
+                        <div class="invalid-feedback">Vui lòng nhập tên size.</div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Huỷ</button>
                     <button type="submit" class="btn btn-success">Lưu</button>
                 </div>
             </form>
@@ -98,15 +122,31 @@
     </div>
 </div>
 
-<!-- Script để gán dữ liệu vào modal -->
+<!-- ======= SCRIPT: GÁN DỮ LIỆU CHO MODAL ======= -->
 <script>
     const editModal = document.getElementById('editModal');
     editModal.addEventListener('show.bs.modal', event => {
         const button = event.relatedTarget;
-        document.getElementById('sizeId').value = button.getAttribute('data-id');
+        document.getElementById('sizeId').value   = button.getAttribute('data-id');
         document.getElementById('sizeName').value = button.getAttribute('data-size');
     });
 </script>
 
+<!-- ======= SCRIPT: VALIDATE FORM BOOTSTRAP ======= -->
+<script>
+    (() => {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
 </body>
 </html>
