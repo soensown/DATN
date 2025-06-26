@@ -11,7 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/material")
+@RequestMapping("/materials")
 public class materialController {
     @Autowired
     materialRepository materialRepo;
@@ -28,17 +28,17 @@ public class materialController {
     @GetMapping("/delete")
     public String delete(@RequestParam()Integer id){
         materialRepo.deleteById(id);
-        return "redirect:/material/hienThi";
+        return "redirect:/materials/hienThi";
     }
     @PostMapping("/add")
     public String add(material material){
         materialRepo.save(material);
-        return "redirect:/material/hienThi";
+        return "redirect:/materials/hienThi";
     }
     @PostMapping("/update")
     public String update(material material){
         materialRepo.save(material);
-        return "redirect:/material/hienThi";
+        return "redirect:/materials/hienThi";
     }
     @GetMapping("/search")
     public String search(Model model, @RequestParam String type) {

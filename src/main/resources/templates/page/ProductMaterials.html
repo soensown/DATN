@@ -61,7 +61,7 @@
                     <form action="/materials/add" method="post">
                         <div class="form-group">
                             <label for="materialName">Tên chất liệu</label>
-                            <input type="text" class="form-control" id="materialName" name="material_name" required>
+                            <input type="text" class="form-control" id="materialName" name="materialName" required>
                         </div>
                         <button type="submit" class="btn btn-primary mt-2">Thêm</button>
                     </form>
@@ -107,13 +107,13 @@
 
 <div class="modal fade" id="editMaterialModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
-        <form action="/material/update" method="post" class="modal-content">
+        <form action="/materials/update" method="post" class="modal-content">
             <div class="modal-header bg-warning text-white">
                 <h5 class="modal-title">Cập nhật chất liệu</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <input type="hidden" name="materialId">
+                <input type="hidden" name="materialId" id="editMaterialId">
                 <div class="mb-3">
                     <label for="editMaterialName" class="form-label">Tên chất liệu</label>
                     <input type="text" class="form-control" id="editMaterialName" name="materialName" required>
@@ -126,15 +126,18 @@
         </form>
     </div>
 </div>
-
 <script>
     const editModal = document.getElementById('editMaterialModal');
     editModal.addEventListener('show.bs.modal', event => {
         const button = event.relatedTarget;
-        const materialId = button.getAttribute('data-id');
-        const materialName = button.getAttribute('data-name');
-        editModal.querySelector('input[name="materialId"]').value = materialId;
-        editModal.querySelector('input[name="materialName"]').value = materialName;
+        const id = button.getAttribute('data-id');
+        const name = button.getAttribute('data-name');
+
+        const inputId = editModal.querySelector('input[name="materialId"]');
+        const inputName = editModal.querySelector('input[name="materialName"]');
+
+        inputId.value = id;
+        inputName.value = name;
     });
 </script>
 
