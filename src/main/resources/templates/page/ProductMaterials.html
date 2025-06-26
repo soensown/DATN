@@ -39,7 +39,7 @@
                             <select class="form-control" id="materialId" name="material_id" required>
                                 <option value="">-- Chọn chất liệu --</option>
                                 <option th:each="material : ${materials}"
-                                        th:value="${material.id}"
+                                        th:value="${material.materialId}"
                                         th:text="${material.materialName}">
                                 </option>
                             </select>
@@ -58,7 +58,7 @@
                 <h5 class="mb-0">thêm loại chất liệu</h5>
             </div>
                 <div class="card-body">
-                    <form th:action="@{/materials/add}" method="post">
+                    <form action="/materials/add" method="post">
                         <div class="form-group">
                             <label for="materialName">Tên chất liệu</label>
                             <input type="text" class="form-control" id="materialName" name="material_name" required>
@@ -71,29 +71,72 @@
         </div>
     </div>
 </div>
-<div style="padding-top: 100px" class="container  justify-content-center align-items-center vh-100" >
+    <div class="container">
+        <table class="table table-bordered table-hover mb-0">
+            <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Tên chất liệu</th>
+                <th>Hành động</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="material : ${materials}">
+                <td th:text="${material.materialId}"></td>
+                <td th:text="${material.materialName}"></td>
+                <td>
 
-    <div >
-        <table class=" table table-hover">
-            <th:block th:each="colors : ${listColors}">
-                <tr>
-                    <td th:text="${colors.id}"></td>
-                    <td th:text="${colors.colorName}"></td>
-                    <td th:text="${colors.colorCode}"></td>
-                    <td>
-                        <a th:href="@{'/colors/delete?id=' + ${colors.id}}" class="btn btn-danger" style="color: white; text-decoration: none">Delete</a>
-                    </td>
+                    <button class="btn btn-warning btn-sm text-white"
+                            data-bs-toggle="modal"
+                            data-bs-target="#editMaterialModal"
+                            th:attr="data-id=${material.materialId}, data-name=${material.materialName}">
+                        Sửa
+                    </button>
 
-                </tr>
-
-            </th:block>
-
+                    <form th:action="@{'/materials/delete/' + ${material.materialId}}" method="post"
+                          style="display:inline-block"
+                          onsubmit="return confirm('Bạn có chắc muốn xóa?')">
+                        <button class="btn btn-danger btn-sm" type="submit">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
         </table>
     </div>
 
+
+<div class="modal fade" id="editMaterialModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form action="/material/update" method="post" class="modal-content">
+            <div class="modal-header bg-warning text-white">
+                <h5 class="modal-title">Cập nhật chất liệu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="materialId">
+                <div class="mb-3">
+                    <label for="editMaterialName" class="form-label">Tên chất liệu</label>
+                    <input type="text" class="form-control" id="editMaterialName" name="materialName" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-warning">Cập nhật</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+            </div>
+        </form>
+    </div>
 </div>
 
-
+<script>
+    const editModal = document.getElementById('editMaterialModal');
+    editModal.addEventListener('show.bs.modal', event => {
+        const button = event.relatedTarget;
+        const materialId = button.getAttribute('data-id');
+        const materialName = button.getAttribute('data-name');
+        editModal.querySelector('input[name="materialId"]').value = materialId;
+        editModal.querySelector('input[name="materialName"]').value = materialName;
+    });
+</script>
 
 </body>
 </html>

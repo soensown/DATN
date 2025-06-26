@@ -11,7 +11,6 @@
 <body>
 <nav th:replace="~{/header/Navbar}"></nav>
 
-<!-- ==== FORM THÊM MÀU ==== -->
 <div class="container py-4 d-flex justify-content-center">
     <div class="col-lg-8" style="padding-top: 100px">
         <div class="card shadow">
@@ -47,7 +46,7 @@
     </div>
 </div>
 
-<!-- ==== DANH SÁCH MÀU ==== -->
+
 <div class="container" style="padding-top: 100px">
     <table class="table table-hover align-middle">
         <thead class="table-light">
@@ -92,7 +91,7 @@
     </table>
 </div>
 
-<!-- ==== MODAL CHỈNH SỬA MÀU ==== -->
+
 <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -128,7 +127,7 @@
     </div>
 </div>
 
-<!-- ==== SCRIPT LẤY DỮ LIỆU TỪ NÚT ==== -->
+
 <script>
     const editModal = document.getElementById('editModal');
     editModal.addEventListener('show.bs.modal', event => {

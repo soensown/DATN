@@ -10,7 +10,7 @@
 
 <nav th:replace="~{/header/Navbar}"></nav>
 
-<!-- Form tìm kiếm -->
+
 <div class="container py-4 d-flex justify-content-center">
     <div class="col-lg-8" style="padding-top: 100px">
         <div class="card shadow">
@@ -25,26 +25,34 @@
                 <h5 class="mb-0">Thêm Thương Hiệu</h5>
             </div>
 
-            <form action="/brands/add" method="post" class="card-body needs-validation" novalidate>
+            <form action="/brands/add" method="post"
+                  enctype="multipart/form-data"
+                  class="card-body needs-validation" novalidate>
+
                 <div class="mb-3">
                     <label class="form-label">Tên thương hiệu</label>
                     <input type="text" class="form-control" name="brandName" required>
-                </div>
-c
-                <div class="mb-3">
-                    <label class="form-label">Logo (link)</label>
-                    <input type="text" class="form-control" name="brandLogo">
+                    <div class="invalid-feedback">Vui lòng nhập tên thương hiệu.</div>
                 </div>
 
+                <div class="mb-3">
+                    <label class="form-label">Chọn logo</label>
+                    <input type="file" class="form-control" name="logoFile" accept="image/*" required>
+                    <div class="invalid-feedback">Vui lòng chọn ảnh logo (jpg, png...)</div>
+                </div>
+
+                <!-- Nút submit -->
                 <div class="d-flex justify-content-end gap-2">
+                    <button type="reset" class="btn btn-outline-secondary">Xoá</button>
                     <button type="submit" class="btn btn-primary">Thêm thương hiệu</button>
                 </div>
             </form>
+
         </div>
     </div>
 </div>
 
-<!-- Bảng danh sách thương hiệu -->
+
 <div class="container" style="padding-top: 100px">
     <table class="table table-hover align-middle">
         <thead class="table-light">
@@ -61,7 +69,7 @@ c
             <td th:text="${b.id}"></td>
             <td th:text="${b.brandName}"></td>
             <td>
-                <img th:src="${b.brandLogo}" alt="Logo" width="50" height="50">
+                <img th:src="@{${b.brandLogo}}" alt="Logo" width="60" height="60" class="border rounded shadow-sm">
             </td>
             <td>
                 <a th:href="@{'/brands/delete/' + ${b.id}}" class="btn btn-danger btn-sm">Xoá</a>
@@ -84,27 +92,43 @@ c
 <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <form action="/brands/update" method="post">
+
+            <form action="/brands/update" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+
                 <div class="modal-header">
                     <h5 class="modal-title">Chỉnh sửa Thương Hiệu</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                            aria-label="Close"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
+
                 <div class="modal-body">
+                    <!-- ID thương hiệu (ẩn) -->
                     <input type="hidden" name="id" id="brandId">
+
+                    <!-- Tên thương hiệu -->
                     <div class="mb-3">
                         <label class="form-label">Tên thương hiệu</label>
                         <input type="text" class="form-control" name="brandName" id="brandName" required>
+                        <div class="invalid-feedback">Vui lòng nhập tên thương hiệu.</div>
                     </div>
+
+                    <!-- Hiển thị logo hiện tại -->
                     <div class="mb-3">
-                        <label class="form-label">Logo</label>
-                        <input type="text" class="form-control" name="brandLogo" id="brandLogo">
+                        <label class="form-label">Logo hiện tại</label><br>
+                        <img id="currentLogo" src="" alt="Logo hiện tại" width="80" height="80" class="rounded border">
+                    </div>
+
+                    <!-- Upload logo mới -->
+                    <div class="mb-3">
+                        <label class="form-label">Chọn logo mới (nếu muốn thay)</label>
+                        <input type="file" class="form-control" name="logoFile" accept="image/*">
                     </div>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
                     <button type="submit" class="btn btn-primary">Lưu</button>
                 </div>
+
             </form>
         </div>
     </div>
@@ -117,8 +141,24 @@ c
         const button = event.relatedTarget;
         document.getElementById('brandId').value = button.getAttribute('data-id');
         document.getElementById('brandName').value = button.getAttribute('data-name');
-        document.getElementById('brandLogo').value = button.getAttribute('data-logo');
+
+        const currentLogoUrl = button.getAttribute('data-logo');
+        document.getElementById('currentLogo').src = currentLogoUrl;
     });
+
+    (() => {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
 </script>
 
 </body>

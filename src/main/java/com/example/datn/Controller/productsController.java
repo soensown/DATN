@@ -21,7 +21,7 @@ public class productsController {
     public String hienThi(Model model){
         model.addAttribute("listProduct_details",product_detailsRepo.findAll());
         model.addAttribute("listProduct_images",product_imagesRepo.findAll());
-        return "/page/ProductDetail";
+        return "/page/Products";
     }
 
     @GetMapping("/delete")
