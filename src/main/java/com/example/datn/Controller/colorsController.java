@@ -34,12 +34,13 @@ public class colorsController {
     }
     @PostMapping("/add")
     public String add(colors colors){
-//        colors.setId(colors.getId());
+
         colorsRepo.save(colors);
         return "redirect:/colors/hienThi";
     }
     @PostMapping("/update")
     public String update(colors colors){
+        colors.setId(colors.getId());
         colorsRepo.save(colors);
         return "redirect:/colors/hienThi";
     }

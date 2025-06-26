@@ -15,6 +15,7 @@ import lombok.Setter;
 public class material {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "material_id")
     private Integer id;
     @Column(name = "material_name")
     private String materialName;
