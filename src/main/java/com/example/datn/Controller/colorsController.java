@@ -32,6 +32,7 @@ public class colorsController {
         model.addAttribute("listColors", colorsRepo.searchByNameOrCode(tenORma));
         return "/page/Coler"; // forward đến trang Thymeleaf
     }
+    //test git
     @PostMapping("/add")
     public String add(colors colors){
 

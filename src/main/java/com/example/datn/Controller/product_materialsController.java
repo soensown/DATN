@@ -1,9 +1,7 @@
 package com.example.datn.Controller;
 
-import com.example.datn.Model.product_details;
-import com.example.datn.Model.products;
+import com.example.datn.Model.material;
 import com.example.datn.repository.materialRepository;
-import com.example.datn.repository.product_imagesRepository;
 import com.example.datn.repository.productsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,31 +12,36 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/product_materials")
 public class product_materialsController {
     @Autowired
-    productsRepository productsRepository;
+    materialRepository materialRepo;
     @Autowired
-    materialRepository materialRepository;
+    productsRepository productsRepo;
     @GetMapping("/hienThi")
     public String hienThi(Model model){
-        model.addAttribute("products",productsRepository.findAll());
-        model.addAttribute("materials",materialRepository.findAll());
-        return "/page/ProductMaterials";
+        model.addAttribute("materials",materialRepo.findAll());
+        model.addAttribute("products",productsRepo.findAll());
+        return "/page/ProductMaterials";//link này mapping fontend file html
     }
 
     @GetMapping("/delete")
     public String delete(@RequestParam()Integer id){
-        productsRepository.deleteById(id);
-        return "redirect:/product_details/hienThi";
+        materialRepo.deleteById(id);
+        return "redirect:/material/hienThi";
     }
 
     @GetMapping("/update/{id}")
     public String viewUpdate(Model model,@PathVariable Integer id){
-        model.addAttribute("listProduct_details",productsRepository.findById(id).get());
-        return "...";
+        model.addAttribute("listMaterial",materialRepo.findById(id).get());
+        return "...";//link này mapping fontend file html
     }
 
     @PostMapping("/add")
-    public String add(products products){
-        productsRepository.save(products);
-        return "redirect:/product_details/hienThi";
+    public String add(material material){
+        materialRepo.save(material);
+        return "redirect:/material/hienThi";
+    }
+    @GetMapping("/search")
+    public String search(Model model, @RequestParam String type) {
+        model.addAttribute("listMaterial", materialRepo.searchByType(type));
+        return "/page/discounts"; // forward đến trang Thymeleaf
     }
 }
