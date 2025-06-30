@@ -10,4 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface sizesRepository extends JpaRepository<sizes, Integer> {
     boolean existsBySizeIgnoreCase(String size);
     Page<sizes> findBySizeContainingIgnoreCase(String keyword, Pageable pageable);
+
 }
+

@@ -14,8 +14,9 @@ import lombok.*;
 @Table(name = "categories")
 public class categories {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // nếu dùng tự động tăng ID
-    private Integer id;
+
+    @Column(name = "category_id")
+    private String id;
 
     @Column(name = "category_name")
     private String categoryName;
