@@ -2,10 +2,11 @@ package com.example.datn.Controller;
 
 import com.example.datn.Model.categories;
 import com.example.datn.Model.product_details;
-import com.example.datn.repository.categoriesRepository;
-import com.example.datn.repository.product_detailsRepository;
-import com.example.datn.repository.product_imagesRepository;
+import com.example.datn.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,34 +14,48 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/product_details")
 public class product_detailsController {
-    @Autowired
-    product_detailsRepository product_detailsRepo;
 
     @Autowired
-    product_imagesRepository product_imagesRepo;
+    private product_detailsRepository repo;
+
+    @Autowired
+    private productsRepository productRepo;
+
+    @Autowired
+    private colorsRepository colorRepo;
+
+    @Autowired
+    private sizesRepository sizeRepo;
 
     @GetMapping("/hienThi")
-    public String hienThi(Model model){
-        model.addAttribute("listProduct_details",product_detailsRepo.findAll());
-        model.addAttribute("listProduct_images",product_imagesRepo.findAll());
+    public String showList(@RequestParam(defaultValue = "0") int page,
+                           @RequestParam(defaultValue = "5") int size,
+                           @RequestParam(required = false) String keyword,
+                           Model model) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<product_details> list = (keyword != null && !keyword.isBlank())
+                ? repo.findByDescriptionContainingIgnoreCase(keyword, pageable)
+                : repo.findAll(pageable);
+        model.addAttribute("products", productRepo.findAll());
+        model.addAttribute("colors", colorRepo.findAll());
+        model.addAttribute("sizes", sizeRepo.findAll());
+        model.addAttribute("list", list);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", list.getTotalPages());
+        model.addAttribute("keyword", keyword);
         return "/page/ProductDetail";
     }
 
-    @GetMapping("/delete")
-    public String delete(@RequestParam()Integer id){
-        product_detailsRepo.deleteById(id);
-        return "redirect:/product_details/hienThi";
+    @GetMapping("/add")
+    public String addForm(Model model) {
+        model.addAttribute("productDetail", new product_details());
+
+        return "/page/ProductDetail";
     }
 
-    @GetMapping("/update/{id}")
-    public String viewUpdate(Model model,@PathVariable Integer id){
-        model.addAttribute("listProduct_details",product_detailsRepo.findById(id).get());
-        return "...";//link này mapping fontend file html
-    }
-
-    @PostMapping("/add")
-    public String add(product_details product_details){
-        product_detailsRepo.save(product_details);
-        return "redirect:/product_details/hienThi";
+    @PostMapping("/save")
+    public String save(@ModelAttribute product_details detail) {
+        repo.save(detail);
+        return "redirect:/product-details/list";
     }
 }
