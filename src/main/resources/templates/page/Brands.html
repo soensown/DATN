@@ -57,11 +57,11 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="b : ${pageBrands.content}">
+        <tr th:each="b : ${pageBrands}">
             <td th:text="${b.id}"></td>
             <td th:text="${b.brandName}"></td>
             <td>
-                <img th:src="@{'/uploads/' + ${b.brandLogo}}" alt="Logo" width="50" height="50">
+                <img th:src="@{${b.brandLogo}}" alt="Logo" width="50">
             </td>
             <td>
                 <a th:href="@{'/brands/delete/' + ${b.id}}" class="btn btn-danger btn-sm">Xoá</a>
