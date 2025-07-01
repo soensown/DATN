@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="">
 <head>
     <meta charset="UTF-8">
     <title>ListProduct</title>
@@ -136,6 +136,23 @@
         document.getElementById('colorName').value = button.getAttribute('data-name');
         document.getElementById('colorCode').value = button.getAttribute('data-code');
     });
+</script>
+
+<!-- Validate Bootstrap -->
+<script>
+    (() => {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
 </script>
 
 </body>
