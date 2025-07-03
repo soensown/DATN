@@ -3,7 +3,7 @@ body {
     padding: 0;
     height: 200vh;
     font-family: sans-serif;
-    background-image: url('/static/uploads/body.png'); /* Đường dẫn đúng */
+    background-image: url('/static/ImgSystem/body.png'); /* Đường dẫn đúng */
     background-repeat: no-repeat;
     background-position: center;
 }

@@ -24,7 +24,7 @@ public class brandsController {
     @Autowired
     brandsRepository brandsRepo;
     //Dường dẫn lưu file
-    private final Path uploadDir = Paths.get("src/main/resources/static/uploads");
+    private final Path uploadDir = Paths.get(System.getProperty("user.dir"), "uploads");
 
     @GetMapping("/hienThi")
     public String hienThi(Model model,
@@ -60,7 +60,11 @@ public class brandsController {
                       @RequestParam("logoFile") MultipartFile logoFile, RedirectAttributes ra) {
         try {
             String fileName = saveLogoFile(logoFile);
-            brands brand = new brands(null, brandName, fileName);
+
+            brands brand = new brands();
+            brand.setBrandName(brandName);
+            brand.setBrandLogo(fileName);
+
             brandsRepo.save(brand);
             ra.addFlashAttribute("successMessage", "Thêm thương hiệu thành công!");
         } catch (IOException e) {
@@ -72,20 +76,27 @@ public class brandsController {
     @PostMapping("/update")
     public String update(@RequestParam("id") Integer id,
                          @RequestParam("brandName") String brandName,
-                         @RequestParam(value = "logoFile", required = false) MultipartFile logoFile, RedirectAttributes ra)
-    { brands brand = brandsRepo.findById(id).orElse(null);
+                         @RequestParam(value = "logoFile",required = false) MultipartFile logoFile,
+                         RedirectAttributes ra) {
+
+        brands brand = brandsRepo.findById(id).orElse(null);
+
         if (brand == null) {
             ra.addFlashAttribute("errorMessage", "Không tìm thấy thương hiệu!");
-            return "redirect:/brands/hienThi"; }
+            return "redirect:/brands/hienThi";
+        }
+
         brand.setBrandName(brandName);
+
         /* nếu người dùng chọn logo mới */
+
         if (logoFile != null && !logoFile.isEmpty()) {
             try {
                 // xoá logo cũ
                 deleteLogoFile(brand.getBrandLogo());
                 // lưu logo mới
-                String fileName = saveLogoFile(logoFile);
-                brand.setBrandLogo(fileName);
+                String filePath  = saveLogoFile(logoFile);
+                brand.setBrandLogo(filePath );
             } catch (IOException e) {
                 ra.addFlashAttribute("errorMessage", "Lỗi upload file: " + e.getMessage());
                 return "redirect:/brands/hienThi";
@@ -99,13 +110,16 @@ public class brandsController {
     /** Lưu file & trả về tên file */
     private String saveLogoFile(MultipartFile file) throws IOException {
         if (!Files.exists(uploadDir)) Files.createDirectories(uploadDir);
+
         String fileName = UUID.randomUUID() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
         Files.copy(file.getInputStream(), uploadDir.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
-        return fileName; // chỉ lưu tên file trong DB
+
+        return "/uploads/" + fileName;
     }
     /** Xoá logo khi cần */
-    private void deleteLogoFile(String fileName) throws IOException {
-        if (fileName != null && !fileName.isBlank()) {
+    private void deleteLogoFile(String filePath) throws IOException {
+        if (filePath != null && !filePath.isBlank()) {
+            String fileName = Paths.get(filePath).getFileName().toString();
             Files.deleteIfExists(uploadDir.resolve(fileName));
         }
     }
