@@ -13,7 +13,6 @@ import com.example.datn.Model.brands;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.util.StringUtils;
-
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.UUID;
