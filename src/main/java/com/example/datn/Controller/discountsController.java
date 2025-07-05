@@ -30,11 +30,11 @@ public class discountsController {
 
         if (keyword != null && !keyword.trim().isEmpty()) {
             // Tìm kiếm theo keyword (ví dụ tìm theo code hoặc description)
-            pageDiscounts = discountsRepo.searchByCodeOrDescription(keyword.trim(), pageable);
+            pageDiscounts = discountsRepo.searchByDescription(keyword.trim(), pageable);
             model.addAttribute("keyword", keyword);
         } else if (type != null && !type.trim().isEmpty()) {
             // Tìm theo type nếu có
-            pageDiscounts = discountsRepo.findByTypeContainingIgnoreCase(type.trim(), pageable);
+            pageDiscounts = discountsRepo.findByDiscountType(type.trim(), pageable);
             model.addAttribute("type", type);
         } else {
             // Hiển thị tất cả nếu không có từ khóa hoặc type

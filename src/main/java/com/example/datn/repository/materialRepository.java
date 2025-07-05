@@ -12,8 +12,8 @@ import java.util.List;
 
 @Repository
 public interface materialRepository extends JpaRepository<material, Integer> {
-    @Query("SELECT c FROM discounts c WHERE c.discountType LIKE %?1% ")
+    @Query("SELECT c FROM material c WHERE c.materialName LIKE %?1% ")
     List<discounts> searchByType(String keyword);
 
-    Page<material> findByTypeContainingIgnoreCase(String trim, Pageable pageable);
+    Page<material> findByMaterialName(String trim, Pageable pageable);
 }

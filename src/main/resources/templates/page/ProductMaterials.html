@@ -141,25 +141,6 @@
     });
 </script>
 
-<div class="d-flex justify-content-center">
-    <nav>
-        <ul class="pagination">
-            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
-                <a class="page-link" th:href="@{'/material/hienThi?page=' + (${currentPage} - 1) + '&type=' + ${type}}">Trước</a>
-            </li>
-            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
-                th:classappend="${i == currentPage} ? 'active'">
-                <a class="page-link" th:href="@{'/material/hienThi?page=' + ${i} + '&type=' + ${type}}"
-                   th:text="${i + 1}">1</a>
-            </li>
-            <li class="page-item" th:classappend="${currentPage + 1 == totalPages} ? 'disabled'">
-                <a class="page-link" th:href="@{'/material/hienThi?page=' + (${currentPage} + 1) + '&type=' + ${type}}">Sau</a>
-            </li>
-        </ul>
-    </nav>
-</div>
-
-
 <!-- Validate Bootstrap -->
 <script>
     (() => {
