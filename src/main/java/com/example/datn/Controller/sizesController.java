@@ -1,6 +1,6 @@
 package com.example.datn.Controller;
 
-import com.example.datn.Model.categories;
+
 import com.example.datn.Model.sizes;
 import com.example.datn.repository.sizesRepository;
 import org.springframework.beans.factory.annotation.Autowired;

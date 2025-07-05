@@ -18,8 +18,8 @@ public class employees {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @OneToOne
-    @JoinColumn(name = "user_id",referencedColumnName = "id")
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     private users user;
     @Column(name = "full_name")
     private String fullName;
