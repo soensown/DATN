@@ -20,13 +20,13 @@ public class materialController {
     public String hienThi(Model model,
                           @RequestParam(defaultValue = "0") int page,
                           @RequestParam(defaultValue = "5") int size,
-                          @RequestParam(required = false) String type) {
+                          @RequestParam(required = false) String name) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
         Page<material> pageMaterial;
 
-        if (type != null && !type.trim().isEmpty()) {
-            pageMaterial = materialRepo.findByTypeContainingIgnoreCase(type.trim(), pageable);
+        if (name != null && !name.trim().isEmpty()) {
+            pageMaterial = materialRepo.findByMaterialName(name.trim(), pageable);
         } else {
             pageMaterial = materialRepo.findAll(pageable);
         }
@@ -34,9 +34,9 @@ public class materialController {
         model.addAttribute("listMaterial", pageMaterial.getContent());
         model.addAttribute("totalPages", pageMaterial.getTotalPages());
         model.addAttribute("currentPage", page);
-        model.addAttribute("type", type);
+        model.addAttribute("name", name);
 
-        return "/page/Material"; // ← thay đúng tên file HTML
+        return "/page/Material";
     }
 
     @PostMapping("/add")
@@ -62,12 +62,6 @@ public class materialController {
         return "redirect:/material/hienThi";
     }
 
-    @GetMapping("/update/{id}")
-    public String viewUpdate(@PathVariable Integer id, Model model) {
-        material m = materialRepo.findById(id).orElse(null);
-        model.addAttribute("material", m);
-        return "/page/MaterialEdit"; // Hoặc dùng chung form
-    }
     @GetMapping("/search")
     public String search(Model model, @RequestParam String type) {
         model.addAttribute("listMaterial", materialRepo.searchByType(type));

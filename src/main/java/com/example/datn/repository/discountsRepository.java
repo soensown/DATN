@@ -14,7 +14,7 @@ import java.util.List;
 public interface discountsRepository extends JpaRepository<discounts, Integer> {
     @Query("SELECT c FROM discounts c WHERE c.discountType LIKE %?1% ")
     List<discounts> searchByType(String keyword);
-    Page<discounts> searchByCodeOrDescription(String keyword, Pageable pageable);
+    Page<discounts> searchByDescription(String keyword, Pageable pageable);
 
-    Page<discounts> findByTypeContainingIgnoreCase(String type, Pageable pageable);
+    Page<discounts> findByDiscountType(String type, Pageable pageable);
 }
