@@ -13,7 +13,10 @@
     </script>
 </head>
 <body>
-<div class="container mt-4">
+<!-- NAVBAR -->
+<nav th:replace="~{/header/Navbar}"></nav>
+
+<div class="container mt-4" style="padding-top: 100px">
     <h3 class="mb-3">Quản lý Nhân viên</h3>
 
     <!-- THÔNG BÁO FLASH -->
@@ -127,9 +130,7 @@
 
             <td th:text="${u.isDel} ? 'Đã xóa' : 'Đang hoạt động'"></td>
 
-            <td th:text="${u.updatedDate != null ?
-                          #dates.format(u.updatedDate,'dd/MM/yyyy') :
-                          #dates.format(u.createdDate,'dd/MM/yyyy')}"></td>
+             <td th:text="${u.updatedDate != null ? #temporals.format(u.updatedDate,'dd/MM/yyyy') : #temporals.format(u.createdDate,'dd/MM/yyyy')}"></td>
 
             <td th:text="${u.updatedBy != null ? u.updatedBy : u.createdBy}"></td>
 

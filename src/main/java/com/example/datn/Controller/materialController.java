@@ -1,45 +1,67 @@
 package com.example.datn.Controller;
 
-import com.example.datn.Model.discounts;
 import com.example.datn.Model.material;
-import com.example.datn.repository.discountsRepository;
 import com.example.datn.repository.materialRepository;
-import com.example.datn.repository.productsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
-@RequestMapping("/materials")
+@RequestMapping("/material")
 public class materialController {
+
     @Autowired
-    materialRepository materialRepo;
-    @Autowired
-    productsRepository productsRepo;
+    private materialRepository materialRepo;
 
     @GetMapping("/hienThi")
-    public String hienThi(Model model){
-        model.addAttribute("materials",materialRepo.findAll());
-        model.addAttribute("products",productsRepo.findAll());
-        return "/page/ProductMaterials";
+    public String hienThi(Model model,
+                          @RequestParam(defaultValue = "0") int page,
+                          @RequestParam(defaultValue = "5") int size,
+                          @RequestParam(required = false) String name) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
+        Page<material> pageMaterial;
+
+        if (name != null && !name.trim().isEmpty()) {
+            pageMaterial = materialRepo.findByMaterialName(name.trim(), pageable);
+        } else {
+            pageMaterial = materialRepo.findAll(pageable);
+        }
+
+        model.addAttribute("listMaterial", pageMaterial.getContent());
+        model.addAttribute("totalPages", pageMaterial.getTotalPages());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("name", name);
+
+        return "/page/Material";
+    }
+
+    @PostMapping("/add")
+    public String add(@ModelAttribute material material,
+                      RedirectAttributes ra) {
+        materialRepo.save(material);
+        ra.addFlashAttribute("successMessage", "Thêm chất liệu thành công!");
+        return "redirect:/material/hienThi";
+    }
+
+    @PostMapping("/update")
+    public String update(@ModelAttribute material material,
+                         RedirectAttributes ra) {
+        materialRepo.save(material);
+        ra.addFlashAttribute("successMessage", "Cập nhật chất liệu thành công!");
+        return "redirect:/material/hienThi";
     }
 
     @GetMapping("/delete")
-    public String delete(@RequestParam()Integer id){
+    public String delete(@RequestParam Integer id, RedirectAttributes ra) {
         materialRepo.deleteById(id);
-        return "redirect:/materials/hienThi";
+        ra.addFlashAttribute("successMessage", "Xoá chất liệu thành công!");
+        return "redirect:/material/hienThi";
     }
-    @PostMapping("/add")
-    public String add(material material){
-        materialRepo.save(material);
-        return "redirect:/materials/hienThi";
-    }
-    @PostMapping("/update")
-    public String update(material material){
-        materialRepo.save(material);
-        return "redirect:/materials/hienThi";
-    }
+
     @GetMapping("/search")
     public String search(Model model, @RequestParam String type) {
         model.addAttribute("listMaterial", materialRepo.searchByType(type));

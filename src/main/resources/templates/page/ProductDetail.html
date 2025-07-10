@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Quản lý Chi Tiết Sản Phẩm</title>
@@ -7,58 +7,69 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-<nav th:replace="~{/header/Navbar}" ></nav>
-
-<div class="container py-5  justify-content-center" >
+<nav th:replace="~{/header/Navbar}"></nav>
+// thử commit lại
+<div class="container py-5">
     <div style="padding-top: 100px">
-        <div class="card shadow mb-5"  >
-            <div class="card-header bg-success text-white"  >
-                <h5 class="mb-0">Thêm Chi Tiết Sản Phẩm</h5>
+        <div class="card shadow mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0" th:text="${productDetail.id == null ? 'Thêm Chi Tiết Sản Phẩm' : 'Cập Nhật Chi Tiết Sản Phẩm'}"></h5>
             </div>
             <form action="/product_details/save" method="post" class="card-body needs-validation" novalidate>
-
                 <div class="mb-3">
                     <label for="detailId" class="form-label">Mã chi tiết sản phẩm</label>
-                    <input type="text" class="form-control" id="detailId" name="product_detail_id" required pattern=".{3,}">
+                    <input type="text" class="form-control" id="detailId" name="id"
+                           th:value="${productDetail.id}" required pattern=".{3,}">
                     <div class="invalid-feedback">Vui lòng nhập mã chi tiết (ít nhất 3 ký tự).</div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="productId" class="form-label">Sản phẩm</label>
-                    <select class="form-select" id="productId" name="product_id" required>
-                        <option value="" disabled selected>-- Chọn sản phẩm --</option>
-                        <option th:each="p : ${products}" th:value="${p.id}" th:text="${p.productName}"></option>
+                    <label class="form-label">Sản phẩm</label>
+                    <select class="form-select" name="product.id" required>
+                        <option value="" disabled>-- Chọn sản phẩm --</option>
+                        <option th:each="p : ${products}"
+                                th:value="${p.id}"
+                                th:selected="${productDetail.product?.id == p.id}"
+                                th:text="${p.productName}"></option>
                     </select>
                     <div class="invalid-feedback">Vui lòng chọn sản phẩm.</div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="colorId" class="form-label">Màu sắc</label>
-                    <select class="form-select" id="colorId" name="color_id" required>
-                        <option value="" disabled selected>-- Chọn màu --</option>
-                        <option th:each="c : ${colors}" th:value="${c.id}" th:text="${c.colorName}"></option>
+                    <label class="form-label">Màu sắc</label>
+                    <select class="form-select" name="color.id" required>
+                        <option value="" disabled>-- Chọn màu --</option>
+                        <option th:each="c : ${colors}"
+                                th:value="${c.id}"
+                                th:selected="${productDetail.color?.id == c.id}"
+                                th:text="${c.colorName}"></option>
                     </select>
                     <div class="invalid-feedback">Vui lòng chọn màu sắc.</div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="sizeId" class="form-label">Kích thước</label>
-                    <select class="form-select" id="sizeId" name="size_id" required>
-                        <option value="" disabled selected>-- Chọn kích thước --</option>
-                        <option th:each="s : ${sizes}" th:value="${s.id}" th:text="${s.size}"></option>
+                    <label class="form-label">Kích thước</label>
+                    <select class="form-select" name="size.id" required>
+                        <option value="" disabled>-- Chọn kích thước --</option>
+                        <option th:each="s : ${sizes}"
+                                th:value="${s.id}"
+                                th:selected="${productDetail.size?.id == s.id}"
+                                th:text="${s.size}"></option>
                     </select>
                     <div class="invalid-feedback">Vui lòng chọn kích thước.</div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="quantity" class="form-label">Số lượng</label>
-                    <input type="number" class="form-control" id="quantity" name="quantity" min="0" required>
+                    <label class="form-label">Số lượng</label>
+                    <input type="number" class="form-control" name="quantity"
+                           min="0" required th:value="${productDetail.quantity}">
                     <div class="invalid-feedback">Vui lòng nhập số lượng hợp lệ.</div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="description" class="form-label">Mô tả</label>
-                    <textarea class="form-control" id="description" name="description" rows="3" maxlength="255"></textarea>
+                    <label class="form-label">Mô tả</label>
+                    <textarea class="form-control" name="description" rows="3" maxlength="255"
+                              th:text="${productDetail.description}"></textarea>
                     <div class="form-text">Tối đa 255 ký tự.</div>
                 </div>
 
@@ -68,67 +79,155 @@
                 </div>
             </form>
         </div>
+
+        <!-- BẢNG DANH SÁCH -->
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Danh sách chi tiết sản phẩm</h5>
+            </div>
+            <div class="card-body p-0">
+                <table class="table table-bordered mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th>Mã</th>
+                        <th>Sản phẩm</th>
+                        <th>Màu</th>
+                        <th>Size</th>
+                        <th>Số lượng</th>
+                        <th>Mô tả</th>
+                        <th>Hành động</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item : ${list.content}">
+                        <td th:text="${item.id}"></td>
+                        <td th:text="${item.product.productName}"></td>
+                        <td th:text="${item.color.colorName}"></td>
+                        <td th:text="${item.size.size}"></td>
+                        <td th:text="${item.quantity}"></td>
+                        <td th:text="${item.description}"></td>
+                        <td>
+                            <button type="button"
+                                    class="btn btn-sm btn-warning"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editModal"
+                                    th:attr="data-id=${item.id},
+                                     data-product-id=${item.product.id},
+                                     data-color-id=${item.color.id},
+                                     data-size-id=${item.size.id},
+                                     data-quantity=${item.quantity},
+                                     data-description=${item.description}">
+                                Sửa
+                            </button>
+                            <a th:href="@{'/product_details/delete/' + ${item.id}}"
+                               onclick="return confirm('Bạn có chắc chắn muốn xoá?')"
+                               class="btn btn-sm btn-danger">Xoá</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <!-- MODAL SỬA -->
+                <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <form action="/product_details/update" method="post" class="needs-validation" novalidate>
+                                <div class="modal-header bg-warning">
+                                    <h5 class="modal-title text-white" id="editModalLabel">Cập Nhật Chi Tiết Sản Phẩm</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="hidden" name="id" id="edit-id"/>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Sản phẩm</label>
+                                        <select class="form-select" name="product.id" id="edit-product" required>
+                                            <option value="">-- Chọn sản phẩm --</option>
+                                            <option th:each="p : ${products}" th:value="${p.id}" th:text="${p.productName}"></option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Màu sắc</label>
+                                        <select class="form-select" name="color.id" id="edit-color" required>
+                                            <option value="">-- Chọn màu --</option>
+                                            <option th:each="c : ${colors}" th:value="${c.id}" th:text="${c.colorName}"></option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Kích thước</label>
+                                        <select class="form-select" name="size.id" id="edit-size" required>
+                                            <option value="">-- Chọn kích thước --</option>
+                                            <option th:each="s : ${sizes}" th:value="${s.id}" th:text="${s.size}"></option>
+                                        </select>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Số lượng</label>
+                                        <input type="number" class="form-control" name="quantity" id="edit-quantity" required min="0"/>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Mô tả</label>
+                                        <textarea class="form-control" name="description" id="edit-description" maxlength="255"></textarea>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                                    <button type="submit" class="btn btn-warning">Lưu thay đổi</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- PHÂN TRANG -->
+            <div class="card-footer">
+                <nav th:if="${totalPages > 1}">
+                    <ul class="pagination justify-content-center mb-0">
+                        <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                            <a class="page-link" th:href="@{'/product_details/hienThi?page=' + ${currentPage - 1}}">«</a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                            th:classappend="${i == currentPage} ? 'active'">
+                            <a class="page-link" th:href="@{'/product_details/hienThi?page=' + ${i}}"
+                               th:text="${i + 1}"></a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{'/product_details/hienThi?page=' + ${currentPage + 1}}">»</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </div>
-
-<!--    <div class="card shadow">-->
-<!--        <div class="card-header bg-success text-white">-->
-<!--            <h5 class="mb-0">Danh sách chi tiết sản phẩm</h5>-->
-<!--        </div>-->
-<!--        <div class="card-body p-0">-->
-<!--            <table class="table table-bordered mb-0">-->
-<!--                <thead class="table-light">-->
-<!--                <tr>-->
-<!--                    <th>Mã</th>-->
-<!--                    <th>Sản phẩm</th>-->
-<!--                    <th>Màu</th>-->
-<!--                    <th>Size</th>-->
-<!--                    <th>Số lượng</th>-->
-<!--                    <th>Mô tả</th>-->
-<!--                    <th>Hành động</th>-->
-<!--                </tr>-->
-<!--                </thead>-->
-<!--                <tbody>-->
-<!--                <tr th:each="item : ${list.content}">-->
-<!--                    <td th:text="${item.id}"></td>-->
-<!--                    <td th:text="${item.products.name}">SP</td>-->
-<!--                    <td th:text="${item.color.colorName}">Màu</td>-->
-<!--                    <td th:text="${item.size.name}">Size</td>-->
-<!--                    <td th:text="${item.quantity}"></td>-->
-<!--                    <td th:text="${item.description}"></td>-->
-<!--                    <td>-->
-<!--                        <a th:href="@{'/product-details/edit/' + ${item.id}}" class="btn btn-sm btn-warning">Sửa</a>-->
-<!--                        <a th:href="@{'/product-details/delete/' + ${item.id}}"-->
-<!--                           onclick="return confirm('Bạn có chắc chắn muốn xoá?')"-->
-<!--                           class="btn btn-sm btn-danger">Xoá</a>-->
-<!--                    </td>-->
-<!--                </tr>-->
-<!--                </tbody>-->
-<!--            </table>-->
-<!--        </div>-->
-
-
-<!--        <div class="card-footer">-->
-<!--            <nav th:if="${totalPages > 1}">-->
-<!--                <ul class="pagination justify-content-center mb-0">-->
-<!--                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">-->
-<!--                        <a class="page-link" th:href="@{'/product-details/list?page=' + ${currentPage - 1}}">«</a>-->
-<!--                    </li>-->
-<!--                    <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"-->
-<!--                        th:classappend="${i == currentPage} ? 'active'">-->
-<!--                        <a class="page-link" th:href="@{'/product-details/list?page=' + ${i}}"-->
-<!--                           th:text="${i + 1}"></a>-->
-<!--                    </li>-->
-<!--                    <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">-->
-<!--                        <a class="page-link" th:href="@{'/product-details/list?page=' + ${currentPage + 1}}">»</a>-->
-<!--                    </li>-->
-<!--                </ul>-->
-<!--            </nav>-->
-<!--        </div>-->
-<!--    </div>-->
 </div>
 
-
 <script>
+    const editModal = document.getElementById('editModal');
+    editModal.addEventListener('show.bs.modal', event => {
+        const button = event.relatedTarget;
+
+        // Lấy dữ liệu từ button
+        const id = button.getAttribute('data-id');
+        const productId = button.getAttribute('data-product-id');
+        const colorId = button.getAttribute('data-color-id');
+        const sizeId = button.getAttribute('data-size-id');
+        const quantity = button.getAttribute('data-quantity');
+        const description = button.getAttribute('data-description');
+
+        // Gán vào các input trong modal
+        document.getElementById('edit-id').value = id;
+        document.getElementById('edit-product').value = productId;
+        document.getElementById('edit-color').value = colorId;
+        document.getElementById('edit-size').value = sizeId;
+        document.getElementById('edit-quantity').value = quantity;
+        document.getElementById('edit-description').value = description;
+    });
+
     (() => {
         'use strict';
         const forms = document.querySelectorAll('.needs-validation');

@@ -1,12 +1,9 @@
 package com.example.datn.Controller;
 
-import com.example.datn.Model.categories;
 import com.example.datn.Model.product_details;
 import com.example.datn.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -31,11 +28,19 @@ public class product_detailsController {
     public String showList(@RequestParam(defaultValue = "0") int page,
                            @RequestParam(defaultValue = "5") int size,
                            @RequestParam(required = false) String keyword,
+                           @RequestParam(required = false) String editId,
                            Model model) {
+
         Pageable pageable = PageRequest.of(page, size);
         Page<product_details> list = (keyword != null && !keyword.isBlank())
                 ? repo.findByDescriptionContainingIgnoreCase(keyword, pageable)
                 : repo.findAll(pageable);
+
+        product_details detail = (editId != null)
+                ? repo.findById(editId).orElse(new product_details())
+                : new product_details();
+
+        model.addAttribute("productDetail", detail); // dùng cho form
         model.addAttribute("products", productRepo.findAll());
         model.addAttribute("colors", colorRepo.findAll());
         model.addAttribute("sizes", sizeRepo.findAll());
@@ -46,16 +51,33 @@ public class product_detailsController {
         return "/page/ProductDetail";
     }
 
-    @GetMapping("/add")
-    public String addForm(Model model) {
-        model.addAttribute("productDetail", new product_details());
-
-        return "/page/ProductDetail";
-    }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute product_details detail) {
+    public String save(@ModelAttribute("productDetail") product_details detail) {
+        // Chỉ thêm mới (không cho phép override nếu ID tồn tại)
+        if (repo.existsById(detail.getId())) {
+            // Có thể thêm thông báo lỗi hoặc redirect
+            return "redirect:/product_details/hienThi?error=duplicate";
+        }
         repo.save(detail);
-        return "redirect:/product-details/list";
+        return "redirect:/product_details/hienThi";
+    }
+
+
+    @PostMapping("/update")
+    public String update(@ModelAttribute product_details detail) {
+        if (!repo.existsById(detail.getId())) {
+            // Không tồn tại ID thì out ra màn hình hiển thị
+            return "redirect:/product_details/hienThi?error=notfound";
+        }
+        repo.save(detail);
+        return "redirect:/product_details/hienThi";
+    }
+
+
+    @GetMapping("/delete/{id}")
+    public String delete(@PathVariable("id") String id) {
+        repo.deleteById(id);
+        return "redirect:/product_details/hienThi";
     }
 }
