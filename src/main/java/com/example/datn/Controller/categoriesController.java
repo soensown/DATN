@@ -32,7 +32,7 @@ public class categoriesController {
     }
 
     @GetMapping("/delete/{id}")
-    public String delete(@PathVariable("id") Integer id) {
+    public String delete(@PathVariable("id") String id) {
         categoriesRepo.deleteById(id);
         return "redirect:/categories/hienThi";
     }
