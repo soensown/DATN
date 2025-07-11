@@ -15,11 +15,11 @@
 <div><a href="ListProduct.html"><img class="banner" src="/ImgSystem/banner.png" width="1903"></a></div>
 <h2>Sản Phẩm nổi bật</h2>
 
-<!-- Splide Container -->
+
 <div class="splide" id="product-carousel">
     <div class="splide__track">
         <ul class="splide__list">
-            <!-- Các đối tượng (items) sẽ được lặp ở đây -->
+
             <li class="splide__slide">Item 1</li>
             <li class="splide__slide">Item 2</li>
             <li class="splide__slide">Item 3</li>
@@ -35,6 +35,22 @@
     </div>
 </div>
 
+
+<th:block th:each="listProducts : ${listsHoaDon}">
+    <tr>
+        <td th:text="${listProducts.brand.brandName}"></td>
+        <td th:text="${listsHoaDon.ngayMuaHang}"></td>
+        <td th:text="${listsHoaDon.nhanVien.ten}"></td>
+        <td th:text="${listsHoaDon.khachHang.ten}"></td>
+        <td th:text="${listsHoaDon.trangThai == 1?'active':'none'}"></td>
+        <td>
+            <a th:href="@{|/HoaDon/detail/${listsHoaDon.id}|}">DETAIL</a>
+            <a th:href="@{|/HoaDon/update/${listsHoaDon.id}|}">UPDATE</a>
+        </td>
+
+    </tr>
+</th:block>
+</body>
 <!-- Include Splide JS -->
 <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4/dist/js/extensions/autoplay.min.js"></script>
 
@@ -69,20 +85,4 @@
     });
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4/dist/js/splide.min.js"></script>
-<th:block th:each="listProducts : ${listsHoaDon}">
-    <tr>
-        <td th:text="${listProducts.brand.brandName}"></td>
-        <td th:text="${listsHoaDon.ngayMuaHang}"></td>
-        <td th:text="${listsHoaDon.nhanVien.ten}"></td>
-        <td th:text="${listsHoaDon.khachHang.ten}"></td>
-        <td th:text="${listsHoaDon.trangThai == 1?'active':'none'}"></td>
-        <td>
-            <a th:href="@{|/HoaDon/detail/${listsHoaDon.id}|}">DETAIL</a>
-            <a th:href="@{|/HoaDon/update/${listsHoaDon.id}|}">UPDATE</a>
-        </td>
-
-    </tr>
-</th:block>
-</body>
-
 </html>
