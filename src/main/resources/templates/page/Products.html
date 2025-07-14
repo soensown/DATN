@@ -122,7 +122,7 @@
                 <td th:text="${p.brands?.brandName}"></td>
                 <td th:text="${p.categories?.categoryName}"></td>
                 <td>
-                    <img th:src="@{${p.thumbnail}}" width="60" height="60" style="object-fit: cover;"/>
+                    <img th:src="${p.thumbnail}" width="60" height="60" style="object-fit: cover;" />
                 </td>
                 <td>
                     <a th:href="@{'/products/delete/' + ${p.id}}" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xoá?')">Xoá</a>
@@ -211,6 +211,24 @@
             </div>
         </div>
 
+        <!-- PHÂN TRANG -->
+        <div class="card-footer">
+            <nav th:if="${totalPages > 1}">
+                <ul class="pagination justify-content-center mb-0">
+                    <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                        <a class="page-link" th:href="@{'/products/hienThi?page=' + ${currentPage - 1}}">«</a>
+                    </li>
+                    <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                        th:classappend="${i == currentPage} ? 'active'">
+                        <a class="page-link" th:href="@{'/products/hienThi?page=' + ${i}}"
+                           th:text="${i + 1}"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                        <a class="page-link" th:href="@{'/products/hienThi?page=' + ${currentPage + 1}}">»</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
 </div>
 

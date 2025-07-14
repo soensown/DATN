@@ -23,7 +23,7 @@ public class brandsController {
     @Autowired
     brandsRepository brandsRepo;
     //Dường dẫn lưu file
-    private final Path uploadDir = Paths.get(System.getProperty("user.dir"), "uploads");
+    private final Path uploadDir = Paths.get(System.getProperty("user.dir"), "updates");
 
     @GetMapping("/hienThi")
     public String hienThi(Model model,
@@ -113,7 +113,7 @@ public class brandsController {
         String fileName = UUID.randomUUID() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
         Files.copy(file.getInputStream(), uploadDir.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
 
-        return "/uploads/" + fileName;
+        return "/updates/" + fileName;
     }
     /** Xoá logo khi cần */
     private void deleteLogoFile(String filePath) throws IOException {

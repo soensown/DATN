@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.*;
 import java.util.Date;
 import java.util.UUID;
@@ -63,8 +64,8 @@ public class productsController {
     public String add(@RequestParam("product_name") String productName,
                       @RequestParam("description") String description,
                       @RequestParam("category_id") String categoryId,
-                      @RequestParam("unit_price") Long unitPrice,
-                      @RequestParam(value = "discount_price", required = false) Long discountPrice,
+                      @RequestParam("unit_price") BigDecimal unitPrice,
+                      @RequestParam(value = "discount_price", required = false) BigDecimal discountPrice,
                       @RequestParam(value = "is_discount", required = false) Boolean isDiscount,
                       @RequestParam(value = "is_special", required = false) Boolean isSpecial,
                       @RequestParam("brand_id") Integer brandId,
@@ -112,7 +113,7 @@ public class productsController {
         }
 
         try {
-            // Cập nhật thông tin cơ bản
+
             existing.setProductName(product.getProductName());
             existing.setDescription(product.getDescription());
             existing.setUnitPrice(product.getUnitPrice());
@@ -124,8 +125,7 @@ public class productsController {
             existing.setWeight(product.getWeight());
             existing.setUpdatedDate(new Date());
             existing.setUpdatedBy("USER001"); // hoặc bạn có thể lấy từ session/người dùng hiện tại
-
-
+            
             if (thumbnailFile != null && !thumbnailFile.isEmpty()) {
                 deleteThumbnailFile(existing.getThumbnail());
                 String fileName = saveThumbnail(thumbnailFile);
