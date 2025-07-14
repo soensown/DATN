@@ -27,9 +27,9 @@ public class products {
     @JoinColumn(name = "category_id")
     private categories categories;
     @Column(name = "discount_price")
-    private Long discountPrice;
+    private BigDecimal discountPrice;
     @Column(name = "unit_price")
-    private Long unitPrice;
+    private BigDecimal unitPrice;
     @Column(name = "is_discount")
     private Boolean isDiscount;
     @Column(name = "is_special")
