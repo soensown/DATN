@@ -1,4 +1,5 @@
 package com.example.datn.Model;
+import jakarta.validation.constraints.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +26,7 @@ public class product_materials {
     private material material;
 
     @Column(name = "percentage", precision = 5, scale = 2)
+    @NotNull(message = "Không được bỏ trống")
     private BigDecimal percentage;
 
 }

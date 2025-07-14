@@ -1,5 +1,6 @@
 package com.example.datn.Model;
 
+import jakarta.validation.constraints.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,11 +27,15 @@ public class cart_items {
     @Column(name = "quantity")
     private int quantity;
     @Column(name = "created_date")
+    @NotNull(message = "Không được bỏ trống")
     private Date created_date;
     @Column(name = "created_by")
+    @NotBlank(message = "Không được để trống")
     private String created_by;
     @Column(name = "updated_date")
+    @NotNull(message = "Không được bỏ trống")
     private Date updated_date;
     @Column(name = "updated_by")
+    @NotBlank(message = "Không được để trống")
     private String updated_by;
 }

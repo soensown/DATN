@@ -1,5 +1,6 @@
 package com.example.datn.Model;
 
+import jakarta.validation.constraints.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,6 +25,7 @@ public class product_images {
     private product_details product_details;
 
     @Column(name = "image_url")
+    @NotBlank(message = "Không được để trống")
     private String image_url;
     @Column(name = "is_thumbnail")
     private boolean is_thumbnail;
