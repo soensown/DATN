@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.*;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -90,6 +91,8 @@ public class productsController {
             product.setWeight(weight != null ? new java.math.BigDecimal(weight) : null);
             product.setCreatedBy(createdBy);
             product.setCreatedDate(new Date());
+            product.setUpdatedBy(createdBy);
+            product.setUpdatedDate(LocalDateTime.now());
             product.setThumbnail(fileName);
 
             productsRepo.save(product);
@@ -123,7 +126,7 @@ public class productsController {
             existing.setBrands(product.getBrands());
             existing.setCategories(product.getCategories());
             existing.setWeight(product.getWeight());
-            existing.setUpdatedDate(new Date());
+            existing.setUpdatedDate(LocalDateTime.now());
             existing.setUpdatedBy("USER001"); // hoặc bạn có thể lấy từ session/người dùng hiện tại
             
             if (thumbnailFile != null && !thumbnailFile.isEmpty()) {

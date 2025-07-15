@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -53,7 +54,7 @@ public class products {
     private String createdBy;
     @Column(name = "updated_date")
     @NotNull(message = "Không được bỏ trống")
-    private Date updatedDate;
+    private LocalDateTime updatedDate;
     @Column(name = "updated_by")
     @NotBlank(message = "Không được để trống")
     private String updatedBy;
