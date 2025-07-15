@@ -1,5 +1,6 @@
 package com.example.datn.Model;
 
+import jakarta.validation.constraints.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +19,9 @@ public class brands {
     @Column(name = "brand_id")
     private Integer id;
     @Column(name = "brand_name")
+    @NotBlank(message = "Không được để trống")
     private String brandName;
     @Column(name = "logo")
+    @NotBlank(message = "Không được để trống")
     private String brandLogo;
 }
