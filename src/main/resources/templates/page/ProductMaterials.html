@@ -5,6 +5,9 @@
     <title>ListProduct</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 </head>
 
@@ -26,17 +29,17 @@
                     <form action="/product-materials/add" method="post">
                         <div class="form-group">
                             <label for="productId">Sản phẩm</label>
-                            <select class="form-control" id="productId" name="product_id" required>
+                            <select class="form-control select2" id="productId" name="product_id" required>
                                 <option value="">-- Chọn sản phẩm --</option>
                                 <option th:each="product : ${products}"
-                                        th:value="${product.product_id}"
-                                        th:text="${product.product_name}">
+                                        th:value="${product.id}"
+                                        th:text="${product.productName}">
                                 </option>
                             </select>
                         </div>
                         <div class="form-group mt-2">
                             <label for="materialId">Chất liệu</label>
-                            <select class="form-control" id="materialId" name="material_id" required>
+                            <select class="form-control select2" id="materialId" name="material_id" required>
                                 <option value="">-- Chọn chất liệu --</option>
                                 <option th:each="material : ${materials}"
                                         th:value="${material.materialId}"
@@ -139,10 +142,7 @@
         inputId.value = id;
         inputName.value = name;
     });
-</script>
 
-<!-- Validate Bootstrap -->
-<script>
     (() => {
         'use strict';
         const forms = document.querySelectorAll('.needs-validation');
@@ -156,6 +156,13 @@
             }, false);
         });
     })();
+    $(document).ready(function () {
+        $('.select2').select2({
+            width: '100%',
+            placeholder: '-- Chọn --',
+            allowClear: true
+        });
+    });
 </script>
 
 </body>
