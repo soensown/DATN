@@ -31,10 +31,10 @@ public class products {
     @JoinColumn(name = "category_id")
     private categories categories;
     @Column(name = "discount_price")
-    @NotNull(message = "Không được bỏ trống")
+    @NotNull(message = "giá khuyến mãi Không được bỏ trống")
     private BigDecimal discountPrice;
     @Column(name = "unit_price")
-    @NotNull(message = "Không được bỏ trống")
+    @NotNull(message = "giá gốc không được bỏ trống")
     private BigDecimal unitPrice;
     @Column(name = "is_discount")
     private Boolean isDiscount;
