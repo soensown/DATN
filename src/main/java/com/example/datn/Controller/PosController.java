@@ -63,6 +63,9 @@ public class PosController {
                     item.setProductDetails(pd);
                     item.setQuantity(quantity);
                     item.setUnitPrice(pd.getProduct().getUnitPrice());
+                    if (pd.getProduct().getDiscountPrice() == null){
+                        pd.getProduct().setDiscountPrice(pd.getProduct().getUnitPrice());
+                    }
                     item.setDiscountPrice(pd.getProduct().getDiscountPrice());
                     item.setTotalPrice(price.multiply(BigDecimal.valueOf(quantity)));
                     items.add(item);
