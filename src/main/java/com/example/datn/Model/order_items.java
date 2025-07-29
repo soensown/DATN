@@ -26,16 +26,16 @@ public class order_items {
     @JoinColumn(name = "product_detail_id")
     private product_details productDetails;
     @Column(name = "quantity")
-    @NotNull(message = "Không được bỏ trống")
+    @NotNull(message = "Không được bỏ trống số lượng")
     private Integer quantity;
     @Column(name = "unit_price")
-    @NotNull(message = "Không được bỏ trống")
+    @NotNull(message = "Không được bỏ trống giá gốc")
     private BigDecimal unitPrice;
     @Column(name = "discount_price")
-    @NotNull(message = "Không được bỏ trống")
+    @NotNull(message = "Không được bỏ trống giảm giá")
     private BigDecimal discountPrice;
 
     @Column(name = "total_price")
-    @NotNull(message = "Không được bỏ trống")
+    @NotNull(message = "Không được bỏ trống tổng tiền")
     private BigDecimal totalPrice;
 }
