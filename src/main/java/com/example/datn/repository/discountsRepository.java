@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,4 +18,8 @@ public interface discountsRepository extends JpaRepository<discounts, Integer> {
     Page<discounts> searchByDescription(String keyword, Pageable pageable);
 
     Page<discounts> findByDiscountType(String type, Pageable pageable);
+
+    @Query("SELECT d FROM discounts d WHERE d.status = 'active' AND CURRENT_DATE BETWEEN d.startDate AND d.endDate")
+    List<discounts> findValidDiscountsForProduct(@Param("productId") String productId);
+
 }

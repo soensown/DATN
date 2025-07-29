@@ -57,19 +57,26 @@ public class PosController {
 
             for (String line : productLines) {
                 String[] parts = line.split("\\|");
-                if (parts.length != 3) {
-                    model.addAttribute("errorMessage", "❌ Dữ liệu sản phẩm không hợp lệ!");
-                    return "/page/ErrosPos";
-                }
 
-                String productDetailId = parts[0].trim();
-                BigDecimal price = new BigDecimal(parts[1].trim());
-                int quantity = Integer.parseInt(parts[2].trim());
+                if (parts.length == 4) {
+                    String productDetailId = parts[0];
+                    BigDecimal price = new BigDecimal(parts[2].trim());
+                    int quantity = Integer.parseInt(parts[3].trim());
 
-                product_details pd = productDetailsRepository.findById(productDetailId).orElse(null);
-                if (pd == null || pd.getProduct() == null) {
-                    model.addAttribute("errorMessage", "❌ Không tìm thấy sản phẩm chi tiết!");
-                    return "/page/ErrosPos";
+                    product_details pd = productDetailsRepository.findById(productDetailId).orElse(null);
+                    if (pd == null) continue;
+
+                    order_items item = new order_items();
+                    item.setProductDetails(pd);
+                    item.setQuantity(quantity);
+                    item.setUnitPrice(pd.getProduct().getUnitPrice());
+                    if (pd.getProduct().getDiscountPrice() == null){
+                        pd.getProduct().setDiscountPrice(pd.getProduct().getUnitPrice());
+                    }
+                    item.setDiscountPrice(pd.getProduct().getDiscountPrice());
+                    item.setTotalPrice(price.multiply(BigDecimal.valueOf(quantity)));
+                    items.add(item);
+
                 }
 
                 order_items item = new order_items();
