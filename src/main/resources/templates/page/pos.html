@@ -9,7 +9,6 @@
 <nav th:replace="~{/header/Navbar}"></nav>
 <body class="container mt-5">
 
-
 <h2 class="mb-4" style="padding-top: 100px"> Bán hàng theo chi tiết</h2>
 
 <!-- Thông báo thành công -->
@@ -176,8 +175,9 @@
             return false;
         }
 
+        // ✅ GỬI CHUỖI ID|PRICE|QUANTITY (không gửi name nữa)
         const cartString = cart.map(p =>
-            `${p.id}|${p.name}|${p.price}|${p.quantity}`
+            `${p.id}|${p.price}|${p.quantity}`
         ).join(";");
 
         $('#cartDataInput').val(cartString);
