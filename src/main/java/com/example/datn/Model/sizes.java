@@ -1,5 +1,6 @@
 package com.example.datn.Model;
 
+import jakarta.validation.constraints.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,5 +19,6 @@ public class sizes {
     @Column(name = "size_id")
     private Integer id;
     @Column(name ="size_name")
+    @NotBlank(message = "Không được để trống")
     private String size;
 }

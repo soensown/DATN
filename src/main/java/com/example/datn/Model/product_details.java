@@ -1,5 +1,6 @@
 package com.example.datn.Model;
 
+import jakarta.validation.constraints.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,8 +32,10 @@ public class product_details {
     private sizes size;
 
     @Column(name = "quantity")
+    @NotNull(message = "Không được bỏ trống")
     private Integer quantity;
 
     @Column(name = "description")
+    @NotBlank(message = "Không được để trống")
     private String description;
 }

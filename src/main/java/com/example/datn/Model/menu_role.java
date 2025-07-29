@@ -1,5 +1,6 @@
 package com.example.datn.Model;
 
+import jakarta.validation.constraints.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,5 +18,6 @@ public class menu_role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "")
+    @NotBlank(message = "Không được để trống")
     private String menu_name;
 }

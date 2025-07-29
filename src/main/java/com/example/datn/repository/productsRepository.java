@@ -7,8 +7,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface productsRepository extends JpaRepository<products, String> {
     Page<products> findByProductNameContainingIgnoreCase(String keyword, Pageable pageable);
-// thử commit lại
+
+    List<products> findTop10ByOrderByCreatedDateDesc();
+
+
 }

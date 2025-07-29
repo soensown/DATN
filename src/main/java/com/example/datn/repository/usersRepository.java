@@ -1,5 +1,6 @@
 package com.example.datn.repository;
 
+import com.example.datn.Model.cart_items;
 import com.example.datn.Model.users;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -7,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface usersRepository extends JpaRepository<users, String> {
@@ -25,4 +28,6 @@ public interface usersRepository extends JpaRepository<users, String> {
                    OR LOWER(u.email)    LIKE LOWER(CONCAT('%', :kw, '%')) )
            """)
     Page<users> searchStaff(String kw, Pageable pageable);
+
+    users findByUsername(String username);
 }

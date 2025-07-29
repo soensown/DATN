@@ -1,11 +1,11 @@
 package com.example.datn.Controller;
 
+import com.example.datn.Model.colors;
+import com.example.datn.Model.discounts;
 import com.example.datn.Model.products;
-import com.example.datn.repository.productsRepository;
-import com.example.datn.repository.brandsRepository;
-import com.example.datn.repository.categoriesRepository;
+import com.example.datn.Model.sizes;
+import com.example.datn.repository.*;
 
-import com.example.datn.repository.usersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Controller;
@@ -16,9 +16,11 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.*;
-import java.util.Date;
-import java.util.UUID;
+import java.text.NumberFormat;
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Controller
 @RequestMapping("/products")
@@ -35,6 +37,12 @@ public class productsController {
 
     @Autowired
     private usersRepository usersRepo;
+    @Autowired
+    private discountsRepository discountsRepo;
+    @Autowired
+    private sizesRepository sizesRepo;
+    @Autowired
+    private colorsRepository colorsRepo;
     private final Path uploadDir = Paths.get(System.getProperty("user.dir"), "updates");
 
     @GetMapping("/hienThi")
@@ -58,13 +66,13 @@ public class productsController {
 
         return "/page/Products";
     }
-    // thử commit lại
+
     @PostMapping("/add")
     public String add(@RequestParam("product_name") String productName,
                       @RequestParam("description") String description,
                       @RequestParam("category_id") String categoryId,
-                      @RequestParam("unit_price") Long unitPrice,
-                      @RequestParam(value = "discount_price", required = false) Long discountPrice,
+                      @RequestParam("unit_price") BigDecimal unitPrice,
+                      @RequestParam(value = "discount_price", required = false) BigDecimal discountPrice,
                       @RequestParam(value = "is_discount", required = false) Boolean isDiscount,
                       @RequestParam(value = "is_special", required = false) Boolean isSpecial,
                       @RequestParam("brand_id") Integer brandId,
@@ -89,6 +97,8 @@ public class productsController {
             product.setWeight(weight != null ? new java.math.BigDecimal(weight) : null);
             product.setCreatedBy(createdBy);
             product.setCreatedDate(new Date());
+            product.setUpdatedBy(createdBy);
+            product.setUpdatedDate(LocalDateTime.now());
             product.setThumbnail(fileName);
 
             productsRepo.save(product);
@@ -112,7 +122,7 @@ public class productsController {
         }
 
         try {
-            // Cập nhật thông tin cơ bản
+
             existing.setProductName(product.getProductName());
             existing.setDescription(product.getDescription());
             existing.setUnitPrice(product.getUnitPrice());
@@ -122,10 +132,9 @@ public class productsController {
             existing.setBrands(product.getBrands());
             existing.setCategories(product.getCategories());
             existing.setWeight(product.getWeight());
-            existing.setUpdatedDate(new Date());
-            existing.setUpdatedBy("USER001"); // hoặc bạn có thể lấy từ session/người dùng hiện tại
-
-
+            existing.setUpdatedDate(LocalDateTime.now());
+            existing.setUpdatedBy("USER001");
+            
             if (thumbnailFile != null && !thumbnailFile.isEmpty()) {
                 deleteThumbnailFile(existing.getThumbnail());
                 String fileName = saveThumbnail(thumbnailFile);
@@ -155,6 +164,45 @@ public class productsController {
         }
         return "redirect:/products/hienThi";
     }
+
+    @GetMapping("/{id}")
+    public String getProductDetail(@PathVariable("id") String id, Model model) {
+        Optional<products> productOpt = productsRepo.findById(id);
+        if (productOpt.isPresent()) {
+            products product = productOpt.get();
+
+            List<colors> colorList = colorsRepo.findByProductId(id);
+            List<sizes> sizeList = sizesRepo.findByProductId(id);
+
+
+
+            BigDecimal unitPrice = product.getUnitPrice();
+            BigDecimal finalPrice = unitPrice;
+            boolean isDiscount = false;
+
+            String formattedPrice = formatCurrency(unitPrice);
+            String formattedFinalPrice = formatCurrency(finalPrice);
+
+
+            model.addAttribute("product", product);
+            model.addAttribute("colorList", colorList);
+            model.addAttribute("sizeList", sizeList);
+            model.addAttribute("isDiscount", isDiscount);
+            model.addAttribute("formattedPrice", formattedPrice);
+            model.addAttribute("formattedFinalPrice", formattedFinalPrice);
+
+            return "/page/product_detail_user";
+        } else {
+            return "redirect:/";
+        }
+    }
+
+    private String formatCurrency(BigDecimal amount) {
+        NumberFormat vnFormat = NumberFormat.getInstance(new Locale("vi", "VN"));
+        return vnFormat.format(amount) + "₫";
+    }
+
+
 
     /** Lưu file & trả về đường dẫn */
     private String saveThumbnail(MultipartFile file) throws IOException {

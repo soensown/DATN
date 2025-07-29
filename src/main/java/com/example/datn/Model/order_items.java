@@ -1,5 +1,6 @@
 package com.example.datn.Model;
 
+import jakarta.validation.constraints.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -23,14 +24,18 @@ public class order_items {
     private orders order;
     @ManyToOne
     @JoinColumn(name = "product_detail_id")
-    private products product;
+    private product_details productDetails;
     @Column(name = "quantity")
+    @NotNull(message = "Không được bỏ trống số lượng")
     private Integer quantity;
     @Column(name = "unit_price")
+    @NotNull(message = "Không được bỏ trống giá gốc")
     private BigDecimal unitPrice;
     @Column(name = "discount_price")
+    @NotNull(message = "Không được bỏ trống giảm giá")
     private BigDecimal discountPrice;
 
     @Column(name = "total_price")
+    @NotNull(message = "Không được bỏ trống tổng tiền")
     private BigDecimal totalPrice;
 }
