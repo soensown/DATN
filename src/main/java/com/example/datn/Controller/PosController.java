@@ -20,13 +20,15 @@ import java.util.*;
 @RequestMapping("/pos")
 @RequiredArgsConstructor
 public class PosController {
-    @Autowired
-    private final ordersRepository orderRepository;
-    @Autowired
-    private final order_itemsRepository orderItemsRepository;
-    @Autowired
-    private final product_detailsRepository productDetailsRepository;
 
+    @Autowired
+    private ordersRepository orderRepository;
+
+    @Autowired
+    private order_itemsRepository orderItemsRepository;
+
+    @Autowired
+    private product_detailsRepository productDetailsRepository;
 
     @PostMapping("/checkout")
     public String handleCheckout(
@@ -41,16 +43,21 @@ public class PosController {
             BigDecimal amountPaid = new BigDecimal(amountPaidStr.trim());
 
             if (amountPaid.compareTo(totalPrice) < 0) {
-                model.addAttribute("errorMessage", "Tiền khách đưa không đủ!");
+                model.addAttribute("errorMessage", "❌ Tiền khách đưa không đủ!");
                 return "/page/ErrosPos";
             }
 
-            // Parse cartData: mỗi dòng có dạng id|name|price|quantity
             List<order_items> items = new ArrayList<>();
             String[] productLines = cartData.split(";");
 
+            if (productLines.length == 0) {
+                model.addAttribute("errorMessage", "❌ Giỏ hàng trống!");
+                return "/page/ErrosPos";
+            }
+
             for (String line : productLines) {
                 String[] parts = line.split("\\|");
+
                 if (parts.length == 4) {
                     String productDetailId = parts[0];
                     BigDecimal price = new BigDecimal(parts[2].trim());
@@ -69,9 +76,20 @@ public class PosController {
                     item.setDiscountPrice(pd.getProduct().getDiscountPrice());
                     item.setTotalPrice(price.multiply(BigDecimal.valueOf(quantity)));
                     items.add(item);
+
                 }
+
+                order_items item = new order_items();
+                item.setProductDetails(pd);
+                item.setQuantity(quantity);
+                item.setUnitPrice(pd.getProduct().getUnitPrice());
+                item.setDiscountPrice(pd.getProduct().getDiscountPrice());
+                item.setTotalPrice(price.multiply(BigDecimal.valueOf(quantity)));
+
+                items.add(item);
             }
 
+            // Tạo đơn hàng
             orders order = new orders();
             order.setId(UUID.randomUUID().toString());
             order.setTotalPrice(totalPrice);
@@ -83,6 +101,7 @@ public class PosController {
 
             orderRepository.save(order);
 
+            // Lưu các sản phẩm trong hóa đơn
             for (order_items item : items) {
                 item.setOrder(order);
                 orderItemsRepository.save(item);
