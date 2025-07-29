@@ -2,22 +2,51 @@ package com.example.datn.Controller;
 
 import com.example.datn.Model.product_details;
 
+import com.example.datn.Model.products;
 import com.example.datn.repository.product_detailsRepository;
+import com.example.datn.repository.productsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
+import java.util.*;
+import java.text.NumberFormat;
 
 @Controller
 @RequestMapping("/")
 public class ServiceController {
     @Autowired
     private product_detailsRepository productDetailsRepository;
+    @Autowired
+    private productsRepository productsRepository;
     @GetMapping("/")
-    public String home(Model model){
+    public String home(Model model) {
+        List<products> productList = productsRepository.findTop10ByOrderByCreatedDateDesc();
+
+        Locale vietnamLocale = new Locale("vi", "VN");
+        NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(vietnamLocale);
+
+        List<Map<String, Object>> formattedProducts = new ArrayList<>();
+
+        for (products p : productList) {
+            Map<String, Object> productMap = new HashMap<>();
+            productMap.put("id", p.getId());
+            productMap.put("productName", p.getProductName());
+            productMap.put("thumbnail", p.getThumbnail());
+            productMap.put("isDiscount", p.getIsDiscount());
+
+            productMap.put("unitPriceFormatted", currencyFormatter.format(p.getUnitPrice()));
+
+            if (Boolean.TRUE.equals(p.getIsDiscount())) {
+                productMap.put("discountPriceFormatted", currencyFormatter.format(p.getDiscountPrice()));
+            }
+
+            formattedProducts.add(productMap);
+        }
+
+        model.addAttribute("listProduct", formattedProducts);
         return "/page/home";
     }
     @GetMapping("/DirectSales")

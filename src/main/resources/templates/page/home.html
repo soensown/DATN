@@ -8,61 +8,48 @@
     <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4/dist/js/splide.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4/dist/js/extensions/autoplay.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide-extension-auto-scroll@0.4.1/dist/js/splide-extension-auto-scroll.min.js"></script>
-
 </head>
-<body>
+<body style="background-color: #F5F5F5">
+
 <nav th:replace="~{/header/NavbarHome}"></nav>
-<div><a href="ListProduct.html"><img class="banner" src="/ImgSystem/banner.png" width="1903"></a></div>
-<h2>Sản Phẩm nổi bật</h2>
 
+<div>
+    <a href="ListProduct.html">
+        <img class="banner" src="/ImgSystem/banner.png" width="1910" height="900">
+    </a>
+</div>
 
+<div style="text-align: center ">
+    <img class="banner" src="/ImgSystem/hotProducts.png" width="1910">
+
+</div>
 <div class="splide" id="product-carousel">
-    <div class="splide__track">
-        <ul class="splide__list">
+    <div class="splide__track" style="background-color: #F5F5F5 ; padding: 5px;">
+        <ul class="splide__list" style="height: 450px">
+            <li class="splide__slide" th:each="p : ${listProduct}" style="background-color: #ECECEC; margin-left: 0px; border-radius: 2px">
+                    <div class="product-card" style="background-color: #ECECEC;" >
+                    <a th:href="@{'/products/' + ${p.id}}" >
+                        <img th:src="@{${p.thumbnail}}" alt="Ảnh sản phẩm" width="300" height="400"/>
+                    </a>
 
-            <li class="splide__slide">Item 1</li>
-            <li class="splide__slide">Item 2</li>
-            <li class="splide__slide">Item 3</li>
-            <li class="splide__slide">Item 4</li>
-            <li class="splide__slide">Item 5</li>
-            <li class="splide__slide">Item 6</li>
-            <li class="splide__slide">Item 7</li>
-            <li class="splide__slide">Item 8</li>
-            <li class="splide__slide">Item 9</li>
-            <li class="splide__slide">Item 10</li>
-            <!-- ... -->
+                    <a th:href="@{'/products/' + ${p.id}}" style="text-decoration: none; color: black;text-align: center;font-family: sans-serif,Georgia">
+                        <h4 th:text="${p.productName}" style="font-size: 20px"></h4>
+                    </a>
+                </div>
+            </li>
+
         </ul>
     </div>
 </div>
-
-
-<th:block th:each="listProducts : ${listsHoaDon}">
-    <tr>
-        <td th:text="${listProducts.brand.brandName}"></td>
-        <td th:text="${listsHoaDon.ngayMuaHang}"></td>
-        <td th:text="${listsHoaDon.nhanVien.ten}"></td>
-        <td th:text="${listsHoaDon.khachHang.ten}"></td>
-        <td th:text="${listsHoaDon.trangThai == 1?'active':'none'}"></td>
-        <td>
-            <a th:href="@{|/HoaDon/detail/${listsHoaDon.id}|}">DETAIL</a>
-            <a th:href="@{|/HoaDon/update/${listsHoaDon.id}|}">UPDATE</a>
-        </td>
-
-    </tr>
-</th:block>
-</body>
-<!-- Include Splide JS -->
-<script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4/dist/js/extensions/autoplay.min.js"></script>
-
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         new Splide('#product-carousel', {
             type: 'loop',
             perPage: 5,
-            gap: '1rem',
+            gap: '0rem',
             autoplay: true,
-            interval: 2000,
+            interval: 200,
             speed: 1500,
             pauseOnHover: true,
             pauseOnFocus: true,
@@ -76,13 +63,12 @@
                     perPage: 2,
                 }
             },
-
             extensions: {
                 Autoplay: window.Autoplay
             }
-
         }).mount();
     });
 </script>
-<script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4/dist/js/splide.min.js"></script>
+
+</body>
 </html>
