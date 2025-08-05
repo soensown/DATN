@@ -26,17 +26,17 @@
 <div class="splide" id="product-carousel">
     <div class="splide__track" style="background-color: #F5F5F5 ; padding: 5px;">
         <ul class="splide__list" style="height: 450px">
-            <li class="splide__slide" th:each="p : ${listProduct}" style="background-color: #ECECEC; margin-left: 0px; border-radius: 2px">
-                    <div class="product-card" style="background-color: #ECECEC;" >
-                    <a th:href="@{'/products/' + ${p.id}}" >
+            <li class="splide__slide" th:each="p : ${listProduct}">
+                <div class="product-card">
+                    <a th:href="@{'/products/' + ${p.id}}">
                         <img th:src="@{${p.thumbnail}}" alt="Ảnh sản phẩm" width="300" height="400"/>
                     </a>
-
-                    <a th:href="@{'/products/' + ${p.id}}" style="text-decoration: none; color: black;text-align: center;font-family: sans-serif,Georgia">
-                        <h4 th:text="${p.productName}" style="font-size: 20px"></h4>
+                    <a th:href="@{'/products/' + ${p.id}}" style="text-decoration: none; color: black; text-align: center;">
+                        <h4 th:text="${p.productName}" style="font-size: 20px; font-family: sans-serif, Georgia;"></h4>
                     </a>
                 </div>
             </li>
+
 
         </ul>
     </div>
@@ -49,7 +49,7 @@
             perPage: 5,
             gap: '0rem',
             autoplay: true,
-            interval: 200,
+            interval: 2000,
             speed: 1500,
             pauseOnHover: true,
             pauseOnFocus: true,
