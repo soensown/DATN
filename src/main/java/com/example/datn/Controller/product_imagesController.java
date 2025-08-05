@@ -1,7 +1,7 @@
 package com.example.datn.Controller;
 
-import com.example.datn.Model.product_details;
-import com.example.datn.Model.product_images;
+import com.example.datn.Model.Product_details;
+import com.example.datn.Model.Product_images;
 import com.example.datn.repository.product_detailsRepository;
 import com.example.datn.repository.product_imagesRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.Date;
 import java.util.UUID;
 
 @Controller
@@ -49,10 +48,10 @@ public class product_imagesController {
 
             String imageUrl = saveThumbnail(file);
 
-            product_details detail = detailRepo.findById(detailId).orElse(null);
+            Product_details detail = detailRepo.findById(detailId).orElse(null);
             if (detail == null) return "redirect:/product_images/hienThi?error=detailNotFound";
 
-            product_images image = new product_images();
+            Product_images image = new Product_images();
             image.setId(imageId);
             image.setProduct_details(detail);
             image.setImage_url(imageUrl);
@@ -70,7 +69,7 @@ public class product_imagesController {
 
     @GetMapping("/delete/{id}")
     public String deleteImage(@PathVariable("id") String id) {
-        product_images image = imageRepo.findById(id).orElse(null);
+        Product_images image = imageRepo.findById(id).orElse(null);
         if (image != null) {
             try {
                 deleteThumbnailFile(image.getImage_url());

@@ -13,7 +13,7 @@ import lombok.*;
 @Setter
 @Entity
 @Table(name = "categories")
-public class categories {
+public class Categories {
     @Id
     @Column(name = "category_id")
     private String id;

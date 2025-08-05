@@ -15,16 +15,16 @@ import java.math.BigDecimal;
 @Setter
 @Entity
 @Table(name = "order_items")
-public class order_items {
+public class Order_items {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToOne
     @JoinColumn(name = "order_id")
-    private orders order;
+    private Orders order;
     @ManyToOne
     @JoinColumn(name = "product_detail_id")
-    private product_details productDetails;
+    private Product_details productDetails;
     @Column(name = "quantity")
     @NotNull(message = "Không được bỏ trống số lượng")
     private Integer quantity;

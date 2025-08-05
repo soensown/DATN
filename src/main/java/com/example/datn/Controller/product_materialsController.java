@@ -1,6 +1,6 @@
 package com.example.datn.Controller;
 
-import com.example.datn.Model.material;
+import com.example.datn.Model.Material;
 import com.example.datn.repository.materialRepository;
 import com.example.datn.repository.productsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class product_materialsController {
     }
 
     @PostMapping("/add")
-    public String add(material material){
+    public String add(Material material){
         materialRepo.save(material);
         return "redirect:/material/hienThi";
     }

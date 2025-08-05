@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "shop_menus")
-public class shop_menus {
+public class Shop_menus {
     @Id
     private String id;
     @Column(name = "upper_menu_id")

@@ -10,7 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.example.datn.repository.usersRepository;
 import com.example.datn.repository.rolesRepository;
-import com.example.datn.Model.users;
+import com.example.datn.Model.Users;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.UUID;
@@ -30,7 +30,7 @@ public class usersController {
                             @RequestParam(required = false) String keyword) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<users> pageUsers = (keyword != null && !keyword.trim().isEmpty())
+        Page<Users> pageUsers = (keyword != null && !keyword.trim().isEmpty())
                 ? usersRepo.searchStaff(keyword.trim(), pageable)
                 : usersRepo.findAllStaff(pageable);
 
@@ -38,14 +38,14 @@ public class usersController {
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", pageUsers.getTotalPages());
         model.addAttribute("keyword", keyword);
-        model.addAttribute("user", new users());           // cho form thêm
+        model.addAttribute("user", new Users());           // cho form thêm
         model.addAttribute("roles", rolesRepo.findAll());  // dropdown chọn role
         return "page/staff";
     }
 
     /* ---------- THÊM MỚI ---------- */
     @PostMapping("/add")
-    public String add(@ModelAttribute users user, RedirectAttributes ra) {
+    public String add(@ModelAttribute Users user, RedirectAttributes ra) {
         if (user.getId() != null && !user.getId().isEmpty()) {
             ra.addFlashAttribute("msg", "ID đã tồn tại!");
             return "redirect:/staff/list";
@@ -64,14 +64,14 @@ public class usersController {
                        @RequestParam(required = false) String keyword,
                        Model model, RedirectAttributes ra) {
 
-        users user = usersRepo.findById(id).orElse(null);
+        Users user = usersRepo.findById(id).orElse(null);
         if (user == null) {
             ra.addFlashAttribute("msg", "Nhân viên không tồn tại!");
             return "redirect:/staff/list";
         }
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<users> pageUsers = (keyword != null && !keyword.trim().isEmpty())
+        Page<Users> pageUsers = (keyword != null && !keyword.trim().isEmpty())
                 ? usersRepo.searchStaff(keyword.trim(), pageable)
                 : usersRepo.findAllStaff(pageable);
 
@@ -86,7 +86,7 @@ public class usersController {
 
     /* ---------- CẬP NHẬT ---------- */
     @PostMapping("/update")
-    public String update(@ModelAttribute users user, RedirectAttributes ra) {
+    public String update(@ModelAttribute Users user, RedirectAttributes ra) {
         if (user.getId() == null || !usersRepo.existsById(user.getId())) {
             ra.addFlashAttribute("msg", "Nhân viên không tồn tại!");
             return "redirect:/staff/list";

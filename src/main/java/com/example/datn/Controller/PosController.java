@@ -1,8 +1,8 @@
 package com.example.datn.Controller;
 
-import com.example.datn.Model.order_items;
-import com.example.datn.Model.orders;
-import com.example.datn.Model.product_details;
+import com.example.datn.Model.Order_items;
+import com.example.datn.Model.Orders;
+import com.example.datn.Model.Product_details;
 import com.example.datn.repository.order_itemsRepository;
 import com.example.datn.repository.ordersRepository;
 import com.example.datn.repository.product_detailsRepository;
@@ -47,7 +47,7 @@ public class PosController {
                 return "/page/ErrosPos";
             }
 
-            List<order_items> items = new ArrayList<>();
+            List<Order_items> items = new ArrayList<>();
             String[] productLines = cartData.split(";");
 
             if (productLines.length == 0) {
@@ -63,10 +63,10 @@ public class PosController {
                     BigDecimal price = new BigDecimal(parts[2].trim());
                     int quantity = Integer.parseInt(parts[3].trim());
 
-                    product_details pd = productDetailsRepository.findById(productDetailId).orElse(null);
+                    Product_details pd = productDetailsRepository.findById(productDetailId).orElse(null);
                     if (pd == null) continue;
 
-                    order_items item = new order_items();
+                    Order_items item = new Order_items();
                     item.setProductDetails(pd);
                     item.setQuantity(quantity);
                     item.setUnitPrice(pd.getProduct().getUnitPrice());
@@ -81,7 +81,7 @@ public class PosController {
             }
 
             // Tạo đơn hàng
-            orders order = new orders();
+            Orders order = new Orders();
             order.setId(UUID.randomUUID().toString());
             order.setTotalPrice(totalPrice);
             order.setStatus("PAID");
@@ -93,7 +93,7 @@ public class PosController {
             orderRepository.save(order);
 
             // Lưu các sản phẩm trong hóa đơn
-            for (order_items item : items) {
+            for (Order_items item : items) {
                 item.setOrder(order);
                 orderItemsRepository.save(item);
             }

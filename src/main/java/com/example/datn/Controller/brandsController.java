@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.example.datn.repository.brandsRepository;
-import com.example.datn.Model.brands;
+import com.example.datn.Model.Brands;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.util.StringUtils;
@@ -31,7 +31,7 @@ public class brandsController {
                           @RequestParam(defaultValue = "5") int size,
                           @RequestParam(required = false) String keyword) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<brands> pageBrands = (keyword != null && !keyword.trim().isEmpty()) ? brandsRepo.findByBrandNameContainingIgnoreCase(keyword.trim(), pageable) : brandsRepo.findAll(pageable);
+        Page<Brands> pageBrands = (keyword != null && !keyword.trim().isEmpty()) ? brandsRepo.findByBrandNameContainingIgnoreCase(keyword.trim(), pageable) : brandsRepo.findAll(pageable);
         model.addAttribute("pageBrands", pageBrands);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", pageBrands.getTotalPages());
@@ -41,7 +41,7 @@ public class brandsController {
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable Integer id, RedirectAttributes ra) {
-        brands brand = brandsRepo.findById(id).orElse(null);
+        Brands brand = brandsRepo.findById(id).orElse(null);
         if (brand != null) {
             try {
                 deleteLogoFile(brand.getBrandLogo());
@@ -60,7 +60,7 @@ public class brandsController {
         try {
             String fileName = saveLogoFile(logoFile);
 
-            brands brand = new brands();
+            Brands brand = new Brands();
             brand.setBrandName(brandName);
             brand.setBrandLogo(fileName);
 
@@ -78,7 +78,7 @@ public class brandsController {
                          @RequestParam(value = "logoFile",required = false) MultipartFile logoFile,
                          RedirectAttributes ra) {
 
-        brands brand = brandsRepo.findById(id).orElse(null);
+        Brands brand = brandsRepo.findById(id).orElse(null);
 
         if (brand == null) {
             ra.addFlashAttribute("errorMessage", "Không tìm thấy thương hiệu!");

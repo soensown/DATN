@@ -15,17 +15,17 @@ import java.util.Date;
 @Setter
 @Entity
 @Table(name = "shipments")
-public class shipments {
+public class Shipments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @OneToOne
     @JoinColumn(name = "order_id")
-    private orders order;
+    private Orders order;
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private users users;
+    private Users users;
     @Column(name = "shipping_address")
     @NotBlank(message = "Không được để trống")
     private String shippingAddress;

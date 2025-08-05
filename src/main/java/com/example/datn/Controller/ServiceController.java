@@ -1,8 +1,8 @@
 package com.example.datn.Controller;
 
-import com.example.datn.Model.product_details;
+import com.example.datn.Model.Product_details;
 
-import com.example.datn.Model.products;
+import com.example.datn.Model.Products;
 import com.example.datn.repository.product_detailsRepository;
 import com.example.datn.repository.productsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +23,14 @@ public class ServiceController {
     private productsRepository productsRepository;
     @GetMapping("/")
     public String home(Model model) {
-        List<products> productList = productsRepository.findTop10ByOrderByCreatedDateDesc();
+        List<Products> productList = productsRepository.findTop10ByOrderByCreatedDateDesc();
 
         Locale vietnamLocale = new Locale("vi", "VN");
         NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(vietnamLocale);
 
         List<Map<String, Object>> formattedProducts = new ArrayList<>();
 
-        for (products p : productList) {
+        for (Products p : productList) {
             Map<String, Object> productMap = new HashMap<>();
             productMap.put("id", p.getId());
             productMap.put("productName", p.getProductName());
@@ -62,7 +62,7 @@ public class ServiceController {
     }
     @GetMapping("/pos")
     public String showPOS(Model model) {
-        List<product_details> productDetails = productDetailsRepository.findAll();
+        List<Product_details> productDetails = productDetailsRepository.findAll();
         model.addAttribute("productDetails", productDetails);
         return "/page/pos";
     }
