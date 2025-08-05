@@ -13,7 +13,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "product_details")
-public class product_details {
+public class Product_details {
 
     @Id
     @Column(name = "product_detail_id")
@@ -21,15 +21,15 @@ public class product_details {
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-    private products product;
+    private Products product;
 
     @ManyToOne
     @JoinColumn(name = "color_id")
-    private colors color;
+    private Colors color;
 
     @ManyToOne
     @JoinColumn(name = "size_id")
-    private sizes size;
+    private Sizes size;
 
     @Column(name = "quantity")
     @NotNull(message = "Không được bỏ trống")

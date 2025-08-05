@@ -1,9 +1,8 @@
 package com.example.datn.Controller;
 
-import com.example.datn.Model.colors;
-import com.example.datn.Model.discounts;
-import com.example.datn.Model.products;
-import com.example.datn.Model.sizes;
+import com.example.datn.Model.Colors;
+import com.example.datn.Model.Products;
+import com.example.datn.Model.Sizes;
 import com.example.datn.repository.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +52,7 @@ public class productsController {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
 
-        Page<products> pageProducts = (keyword != null && !keyword.trim().isEmpty())
+        Page<Products> pageProducts = (keyword != null && !keyword.trim().isEmpty())
                 ? productsRepo.findByProductNameContainingIgnoreCase(keyword.trim(), pageable)
                 : productsRepo.findAll(pageable);
         model.addAttribute("listUsers",usersRepo.findAll());
@@ -84,7 +83,7 @@ public class productsController {
         try {
             String fileName = saveThumbnail(thumbnailFile);
 
-            products product = new products();
+            Products product = new Products();
             product.setId(UUID.randomUUID().toString());
             product.setProductName(productName);
             product.setDescription(description);
@@ -111,11 +110,11 @@ public class productsController {
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute products product,
+    public String update(@ModelAttribute Products product,
                          @RequestParam(value = "thumbnail_file", required = false) MultipartFile thumbnailFile,
                          RedirectAttributes ra) {
 
-        products existing = productsRepo.findById(product.getId()).orElse(null);
+        Products existing = productsRepo.findById(product.getId()).orElse(null);
         if (existing == null) {
             ra.addFlashAttribute("errorMessage", "Không tìm thấy sản phẩm!");
             return "redirect:/products/hienThi";
@@ -152,7 +151,7 @@ public class productsController {
 
     @GetMapping("/delete/{id}")
     public String delete(@PathVariable String id, RedirectAttributes ra) {
-        products product = productsRepo.findById(id).orElse(null);
+        Products product = productsRepo.findById(id).orElse(null);
         if (product != null) {
             try {
                 deleteThumbnailFile(product.getThumbnail());
@@ -167,12 +166,12 @@ public class productsController {
 
     @GetMapping("/{id}")
     public String getProductDetail(@PathVariable("id") String id, Model model) {
-        Optional<products> productOpt = productsRepo.findById(id);
+        Optional<Products> productOpt = productsRepo.findById(id);
         if (productOpt.isPresent()) {
-            products product = productOpt.get();
+            Products product = productOpt.get();
 
-            List<colors> colorList = colorsRepo.findByProductId(id);
-            List<sizes> sizeList = sizesRepo.findByProductId(id);
+            List<Colors> colorList = colorsRepo.findByProductId(id);
+            List<Sizes> sizeList = sizesRepo.findByProductId(id);
 
 
 

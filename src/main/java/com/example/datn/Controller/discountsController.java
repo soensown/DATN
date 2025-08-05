@@ -1,6 +1,6 @@
 package com.example.datn.Controller;
 
-import com.example.datn.Model.discounts;
+import com.example.datn.Model.Discounts;
 import com.example.datn.repository.discountsRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class discountsController {
                           @RequestParam(required = false) String type) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<discounts> pageDiscounts;
+        Page<Discounts> pageDiscounts;
 
         if (keyword != null && !keyword.trim().isEmpty()) {
             // Tìm kiếm theo keyword (ví dụ tìm theo code hoặc description)
@@ -49,7 +49,7 @@ public class discountsController {
     }
 
     @PostMapping("/add")
-    public String add(@Valid discounts discount,
+    public String add(@Valid Discounts discount,
                       BindingResult result,
                       RedirectAttributes ra,
                       Model model,
@@ -58,7 +58,7 @@ public class discountsController {
 
         if (result.hasErrors()) {
             Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-            Page<discounts> pageDiscounts = discountsRepo.findAll(pageable);
+            Page<Discounts> pageDiscounts = discountsRepo.findAll(pageable);
             model.addAttribute("listDiscounts", pageDiscounts.getContent());
             model.addAttribute("totalPages", pageDiscounts.getTotalPages());
             model.addAttribute("currentPage", page);
@@ -72,7 +72,7 @@ public class discountsController {
     }
 
     @PostMapping("/update")
-    public String update(@Valid discounts discount,
+    public String update(@Valid Discounts discount,
                          BindingResult result,
                          RedirectAttributes ra,
                          Model model,
@@ -81,7 +81,7 @@ public class discountsController {
 
         if (result.hasErrors()) {
             Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-            Page<discounts> pageDiscounts = discountsRepo.findAll(pageable);
+            Page<Discounts> pageDiscounts = discountsRepo.findAll(pageable);
             model.addAttribute("listDiscounts", pageDiscounts.getContent());
             model.addAttribute("totalPages", pageDiscounts.getTotalPages());
             model.addAttribute("currentPage", page);
@@ -96,7 +96,7 @@ public class discountsController {
 
     @GetMapping("/delete")
     public String delete(@RequestParam("id") Integer id, RedirectAttributes ra) {
-        discounts discount = discountsRepo.findById(id).orElse(null);
+        Discounts discount = discountsRepo.findById(id).orElse(null);
         if (discount != null) {
             discountsRepo.deleteById(id);
             ra.addFlashAttribute("successMessage", "Đã xoá mã giảm giá!");

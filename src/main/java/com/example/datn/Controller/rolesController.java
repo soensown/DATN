@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.example.datn.repository.rolesRepository;
-import com.example.datn.Model.roles;
+import com.example.datn.Model.Roles;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.UUID;
 
@@ -25,17 +25,17 @@ public class rolesController {
                        @RequestParam(defaultValue = "5") int size,
                        @RequestParam(required = false) String keyword) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<roles> pageRoles = (keyword != null && !keyword.trim().isEmpty()) ? rolesRepo.findByRoleNameContainingIgnoreCaseOrRoleCodeContainingIgnoreCase(keyword.trim(), keyword.trim(), pageable) : rolesRepo.findAll(pageable);
+        Page<Roles> pageRoles = (keyword != null && !keyword.trim().isEmpty()) ? rolesRepo.findByRoleNameContainingIgnoreCaseOrRoleCodeContainingIgnoreCase(keyword.trim(), keyword.trim(), pageable) : rolesRepo.findAll(pageable);
         model.addAttribute("pageRoles", pageRoles);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages", pageRoles.getTotalPages());
         model.addAttribute("keyword", keyword);
-        model.addAttribute("role", new roles());   // cho form thêm
+        model.addAttribute("role", new Roles());   // cho form thêm
         return "page/roles";
     }
     /* ------------ ADD ------------ */
     @PostMapping("/add")
-    public String add(@ModelAttribute roles role, RedirectAttributes ra) {
+    public String add(@ModelAttribute Roles role, RedirectAttributes ra) {
         if (role.getId() == null || role.getId().isEmpty()) {
             role.setId(UUID.randomUUID().toString());
         }
@@ -50,13 +50,13 @@ public class rolesController {
                        @RequestParam(defaultValue = "5") int size,
                        @RequestParam(required = false) String keyword,
                        Model model, RedirectAttributes ra) {
-        roles role = rolesRepo.findById(id).orElse(null);
+        Roles role = rolesRepo.findById(id).orElse(null);
         if (role == null) {
             ra.addFlashAttribute("msg", "Vai trò không tồn tại!");
             return "redirect:/roles/list";
         }
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<roles> pageRoles = (keyword != null && !keyword.trim().isEmpty()) ? rolesRepo.findByRoleNameContainingIgnoreCaseOrRoleCodeContainingIgnoreCase(keyword.trim(), keyword.trim(), pageable) : rolesRepo.findAll(pageable);
+        Page<Roles> pageRoles = (keyword != null && !keyword.trim().isEmpty()) ? rolesRepo.findByRoleNameContainingIgnoreCaseOrRoleCodeContainingIgnoreCase(keyword.trim(), keyword.trim(), pageable) : rolesRepo.findAll(pageable);
         model.addAttribute("role", role);
         model.addAttribute("pageRoles", pageRoles);
         model.addAttribute("currentPage", page);
@@ -66,7 +66,7 @@ public class rolesController {
     }
     /* ------------ UPDATE ------------ */
     @PostMapping("/update")
-    public String update(@ModelAttribute roles role, RedirectAttributes ra) {
+    public String update(@ModelAttribute Roles role, RedirectAttributes ra) {
         rolesRepo.save(role);
         ra.addFlashAttribute("msg", "Cập nhật vai trò thành công!");
         return "redirect:/roles/list";

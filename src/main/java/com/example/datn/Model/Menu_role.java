@@ -12,16 +12,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "colors")
-public class colors {
+@Table(name = "menu_role")
+public class Menu_role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "color_id")
     private Integer id;
-    @Column(name = "color_name")
+    @Column(name = "")
     @NotBlank(message = "Không được để trống")
-    private String colorName;
-    @Column(name = "color_code")
-    @NotBlank(message = "Không được để trống")
-    private String colorCode;
+    private String menu_name;
 }

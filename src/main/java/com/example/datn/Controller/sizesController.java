@@ -1,16 +1,13 @@
 package com.example.datn.Controller;
 
 
-import com.example.datn.Model.sizes;
+import com.example.datn.Model.Sizes;
 import com.example.datn.repository.sizesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/sizes")
@@ -24,7 +21,7 @@ public class sizesController {
                           @RequestParam(defaultValue = "5") int size,
                           @RequestParam(required = false) String keyword) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<sizes> pageSizes = (keyword != null && !keyword.trim().isEmpty()) ? sizesRepo.findBySizeContainingIgnoreCase(keyword.trim(), pageable) : sizesRepo.findAll(pageable);
+        Page<Sizes> pageSizes = (keyword != null && !keyword.trim().isEmpty()) ? sizesRepo.findBySizeContainingIgnoreCase(keyword.trim(), pageable) : sizesRepo.findAll(pageable);
         model.addAttribute("pageSizes",   pageSizes);
         model.addAttribute("currentPage", page);
         model.addAttribute("totalPages",  pageSizes.getTotalPages());
@@ -39,12 +36,12 @@ public class sizesController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute sizes size,
+    public String add(@ModelAttribute Sizes size,
                       @RequestParam(defaultValue = "0") int page,
                       @RequestParam(defaultValue = "5") int sizePerPage, Model model) {
         if (sizesRepo.existsBySizeIgnoreCase(size.getSize())) {
             Pageable pageable = PageRequest.of(page, sizePerPage, Sort.by("id").descending());
-            Page<sizes> pageSizes = sizesRepo.findAll(pageable);
+            Page<Sizes> pageSizes = sizesRepo.findAll(pageable);
             model.addAttribute("pageSizes", pageSizes);
             model.addAttribute("currentPage", page);
             model.addAttribute("totalPages", pageSizes.getTotalPages());
@@ -56,7 +53,7 @@ public class sizesController {
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute sizes size) {
+    public String update(@ModelAttribute Sizes size) {
         sizesRepo.save(size);
         return "redirect:/sizes/hienThi";
     }

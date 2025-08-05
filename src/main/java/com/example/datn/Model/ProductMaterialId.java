@@ -16,7 +16,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class productMaterialId implements Serializable {
+public class ProductMaterialId implements Serializable {
     @Column(name = "product_id", insertable = false, updatable = false)
     @NotBlank(message = "Không được để trống")
     private String productId;

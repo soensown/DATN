@@ -1,6 +1,6 @@
 package com.example.datn.Controller;
 
-import com.example.datn.Model.categories;
+import com.example.datn.Model.Categories;
 import com.example.datn.repository.categoriesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,7 +23,7 @@ public class categoriesController {
                           @RequestParam(defaultValue = "5") int size,
                           @RequestParam(required = false)   String keyword) {
         Pageable pageable       = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<categories> result = (keyword != null && !keyword.trim().isEmpty()) ? categoriesRepo.findByCategoryNameContainingIgnoreCase(keyword.trim(), pageable) : categoriesRepo.findAll(pageable);
+        Page<Categories> result = (keyword != null && !keyword.trim().isEmpty()) ? categoriesRepo.findByCategoryNameContainingIgnoreCase(keyword.trim(), pageable) : categoriesRepo.findAll(pageable);
         model.addAttribute("pageCategories", result);
         model.addAttribute("currentPage",    page);
         model.addAttribute("totalPages",     result.getTotalPages());
@@ -38,13 +38,13 @@ public class categoriesController {
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute categories cat) {
+    public String update(@ModelAttribute Categories cat) {
         categoriesRepo.save(cat);
         return "redirect:/categories/hienThi";
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute categories cat) {
+    public String add(@ModelAttribute Categories cat) {
         categoriesRepo.save(cat);
         return "redirect:/categories/hienThi";
     }

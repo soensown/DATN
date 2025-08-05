@@ -17,7 +17,7 @@ import java.util.Date;
 @Setter
 @Entity
 @Table(name = "products")
-public class products {
+public class Products {
     @Id
     @Column(name = "product_id")
     private String id;
@@ -29,7 +29,7 @@ public class products {
     private String description;
     @ManyToOne
     @JoinColumn(name = "category_id")
-    private categories categories;
+    private Categories categories;
     @Column(name = "discount_price")
     @NotNull(message = "giá khuyến mãi Không được bỏ trống")
     private BigDecimal discountPrice;
@@ -42,7 +42,7 @@ public class products {
     private Boolean isSpecial;
     @ManyToOne
     @JoinColumn(name = "brand_id")
-    private com.example.datn.Model.brands brands;
+    private Brands brands;
     @Column(name = "weight")
     @NotNull(message = "Không được bỏ trống")
     private BigDecimal weight;

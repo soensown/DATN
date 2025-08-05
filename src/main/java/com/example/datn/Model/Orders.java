@@ -15,16 +15,16 @@ import java.util.Date;
 @Setter
 @Entity
 @Table(name = "orders")
-public class orders {
+public class Orders {
     @Id
     @Column(name = "order_id")
     private String id;
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private users user;
+    private Users user;
     @ManyToOne
     @JoinColumn(name = "discount_id")
-    private discounts discount;
+    private Discounts discount;
     @Column(name = "total_price")
     @NotNull(message = "Không được bỏ trống")
     private BigDecimal totalPrice;

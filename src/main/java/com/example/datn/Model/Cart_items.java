@@ -15,15 +15,15 @@ import java.util.Date;
 @Setter
 @Entity
 @Table(name = "cart_items")
-public class cart_items {
+public class Cart_items {
     @Id
     private String id;
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private users user;
+    private Users user;
     @ManyToOne
     @JoinColumn(name = "product_detail_id")
-    private product_details product_details;
+    private Product_details product_details;
     @Column(name = "quantity")
     private int quantity;
     @Column(name = "created_date")

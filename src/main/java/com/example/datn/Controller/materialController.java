@@ -1,6 +1,6 @@
 package com.example.datn.Controller;
 
-import com.example.datn.Model.material;
+import com.example.datn.Model.Material;
 import com.example.datn.repository.materialRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -23,7 +23,7 @@ public class materialController {
                           @RequestParam(required = false) String name) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<material> pageMaterial;
+        Page<Material> pageMaterial;
 
         if (name != null && !name.trim().isEmpty()) {
             pageMaterial = materialRepo.findByMaterialName(name.trim(), pageable);
@@ -40,7 +40,7 @@ public class materialController {
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute material material,
+    public String add(@ModelAttribute Material material,
                       RedirectAttributes ra) {
         materialRepo.save(material);
         ra.addFlashAttribute("successMessage", "Thêm chất liệu thành công!");
@@ -48,7 +48,7 @@ public class materialController {
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute material material,
+    public String update(@ModelAttribute Material material,
                          RedirectAttributes ra) {
         materialRepo.save(material);
         ra.addFlashAttribute("successMessage", "Cập nhật chất liệu thành công!");

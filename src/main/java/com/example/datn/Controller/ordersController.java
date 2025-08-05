@@ -1,8 +1,8 @@
 package com.example.datn.Controller;
 
-import com.example.datn.Model.order_items;
-import com.example.datn.Model.orders;
-import com.example.datn.Model.product_details;
+import com.example.datn.Model.Order_items;
+import com.example.datn.Model.Orders;
+import com.example.datn.Model.Product_details;
 import com.example.datn.repository.order_itemsRepository;
 import com.example.datn.repository.ordersRepository;
 import com.example.datn.repository.product_detailsRepository;
@@ -31,7 +31,7 @@ public class ordersController {
 
     @GetMapping
     public String showAllOrders(Model model) {
-        List<orders> ordersList = ordersRepo.findByStatusNot("deleted");
+        List<Orders> ordersList = ordersRepo.findByStatusNot("deleted");
         model.addAttribute("orders", ordersList);
         return "/page/Order"; // Giao diện chính
     }
@@ -39,8 +39,8 @@ public class ordersController {
     // ✅ Lấy chi tiết sản phẩm trong đơn hàng (load vào modal qua JS fetch)
     @GetMapping("/details/{orderId}")
     public String getOrderItems(@PathVariable String orderId, Model model) {
-        List<order_items> orderItems = orderItemsRepo.findByOrder_Id(orderId);
-        List<product_details> productDetails = productDetailsRepo.findAll();
+        List<Order_items> orderItems = orderItemsRepo.findByOrder_Id(orderId);
+        List<Product_details> productDetails = productDetailsRepo.findAll();
 
         model.addAttribute("orderItems", orderItems);
         model.addAttribute("productDetails", productDetails);
@@ -54,7 +54,7 @@ public class ordersController {
                               @RequestParam("quantities") List<Integer> quantities) {
 
         for (int i = 0; i < itemIds.size(); i++) {
-            order_items item = orderItemsRepo.findById(itemIds.get(i)).orElseThrow();
+            Order_items item = orderItemsRepo.findById(itemIds.get(i)).orElseThrow();
             int qty = quantities.get(i);
 
             item.setQuantity(qty);
@@ -73,7 +73,7 @@ public class ordersController {
     // ✅ Xoá sản phẩm khỏi đơn hàng
     @PostMapping("/delete/{itemId}")
     public String deleteItem(@PathVariable Integer itemId) {
-        order_items item = orderItemsRepo.findById(itemId).orElseThrow();
+        Order_items item = orderItemsRepo.findById(itemId).orElseThrow();
         String orderId = item.getOrder().getId();
         orderItemsRepo.deleteById(itemId);
         return "redirect:/orders/details/" + orderId;
@@ -85,10 +85,10 @@ public class ordersController {
                           @RequestParam("productDetailId") String productDetailId,
                           @RequestParam("quantity") Integer quantity) {
 
-        orders order = ordersRepo.findById(orderId).orElseThrow();
-        product_details pd = productDetailsRepo.findById(productDetailId).orElseThrow();
+        Orders order = ordersRepo.findById(orderId).orElseThrow();
+        Product_details pd = productDetailsRepo.findById(productDetailId).orElseThrow();
 
-        order_items item = new order_items();
+        Order_items item = new Order_items();
         item.setOrder(order);
         item.setProductDetails(pd);
         item.setQuantity(quantity);

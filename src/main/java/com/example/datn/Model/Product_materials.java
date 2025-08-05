@@ -13,17 +13,17 @@ import java.math.BigDecimal;
 @Setter
 @Entity
 @Table(name = "product_materials")
-public class product_materials {
+public class Product_materials {
     @EmbeddedId
-    private productMaterialId id;
+    private ProductMaterialId id;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-    private products product;
+    private Products product;
 
     @ManyToOne
     @JoinColumn(name = "material_id")
-    private material material;
+    private Material material;
 
     @Column(name = "percentage", precision = 5, scale = 2)
     @NotNull(message = "Không được bỏ trống")

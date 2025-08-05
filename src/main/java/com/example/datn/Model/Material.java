@@ -7,21 +7,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table(name = "brands")
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class brands {
+@Entity
+@Table(name = "material")
+public class Material {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "brand_id")
-    private Integer id;
-    @Column(name = "brand_name")
+    @Column(name = "material_id")
+    @NotNull(message = "Không được bỏ trống")
+    private Integer materialId;
+    @Column(name = "material_name")
     @NotBlank(message = "Không được để trống")
-    private String brandName;
-    @Column(name = "logo")
-    @NotBlank(message = "Không được để trống")
-    private String brandLogo;
+    private String materialName;
 }
