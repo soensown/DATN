@@ -1,72 +1,103 @@
 package com.example.datn.Controller;
 
+import com.example.datn.Model.product_details;
 import com.example.datn.Model.product_images;
 import com.example.datn.repository.product_detailsRepository;
 import com.example.datn.repository.product_imagesRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.*;
+import java.util.Date;
+import java.util.UUID;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/product_images")
 public class product_imagesController {
 
     @Autowired
-    private product_detailsRepository product_detailsRepo;
+    private final product_imagesRepository imageRepo;
 
     @Autowired
-    private product_imagesRepository product_imagesRepo;
+    private final product_detailsRepository detailRepo;
+
+
+    private final Path uploadDir = Paths.get(System.getProperty("user.dir"), "updates");
 
     @GetMapping("/hienThi")
-    public String hienThi(Model model,
-                          @RequestParam(defaultValue = "0") int page,
-                          @RequestParam(defaultValue = "5") int size) {
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<product_images> pageProductImages = product_imagesRepo.findAll(pageable);
-
-        model.addAttribute("listProduct_images", pageProductImages.getContent());
-        model.addAttribute("totalPages", pageProductImages.getTotalPages());
+    public String showAll(@RequestParam(defaultValue = "0") int page, Model model) {
+        model.addAttribute("listImages", imageRepo.findAll());
+        model.addAttribute("listProduct_details", detailRepo.findAll());
         model.addAttribute("currentPage", page);
-        model.addAttribute("listProduct_details", product_detailsRepo.findAll()); // dùng cho combobox hoặc form add
+        model.addAttribute("totalPages", 1);
         return "/page/ProductImages";
     }
 
     @PostMapping("/add")
-    public String add(@ModelAttribute product_images productImage,
-                      RedirectAttributes ra) {
-        product_imagesRepo.save(productImage);
-        ra.addFlashAttribute("successMessage", "Thêm ảnh sản phẩm thành công!");
+    public String addImage(@RequestParam("image_id") String imageId,
+                           @RequestParam("product_detail_id") String detailId,
+                           @RequestParam("imageFile") MultipartFile file,
+                           @RequestParam(value = "is_thumbnail", required = false) String isThumb) {
+        try {
+
+            String imageUrl = saveThumbnail(file);
+
+            product_details detail = detailRepo.findById(detailId).orElse(null);
+            if (detail == null) return "redirect:/product_images/hienThi?error=detailNotFound";
+
+            product_images image = new product_images();
+            image.setId(imageId);
+            image.setProduct_details(detail);
+            image.setImage_url(imageUrl);
+            image.set_thumbnail(isThumb != null);
+
+            imageRepo.save(image);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "redirect:/product_images/hienThi?error=uploadFailed";
+        }
+
         return "redirect:/product_images/hienThi";
     }
 
-    @PostMapping("/update")
-    public String update(@ModelAttribute product_images productImage,
-                         RedirectAttributes ra) {
-        product_imagesRepo.save(productImage);
-        ra.addFlashAttribute("successMessage", "Cập nhật ảnh sản phẩm thành công!");
-        return "redirect:/product_images/hienThi";
-    }
-
-    @GetMapping("/delete")
-    public String delete(@RequestParam Integer id,
-                         RedirectAttributes ra) {
-        product_imagesRepo.deleteById(id);
-        ra.addFlashAttribute("successMessage", "Xóa ảnh sản phẩm thành công!");
-        return "redirect:/product_images/hienThi";
-    }
-
-    @GetMapping("/update/{id}")
-    public String viewUpdate(@PathVariable Integer id, Model model) {
-        product_images img = product_imagesRepo.findById(id).orElse(null);
-        if (img != null) {
-            model.addAttribute("productImage", img);
-            model.addAttribute("listProduct_details", product_detailsRepo.findAll());
-            return "/page/EditProductImage"; // Gợi ý: tạo file HTML riêng cho sửa
+    @GetMapping("/delete/{id}")
+    public String deleteImage(@PathVariable("id") String id) {
+        product_images image = imageRepo.findById(id).orElse(null);
+        if (image != null) {
+            try {
+                deleteThumbnailFile(image.getImage_url());
+                imageRepo.deleteById(id);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return "redirect:/product_images/hienThi";
+    }
+
+
+
+    private String saveThumbnail(MultipartFile file) throws IOException {
+        if (!Files.exists(uploadDir)) Files.createDirectories(uploadDir);
+
+        String fileName = UUID.randomUUID() + "_" + StringUtils.cleanPath(file.getOriginalFilename());
+        Path filePath = uploadDir.resolve(fileName);
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        return "/updates/" + fileName;
+    }
+
+    private void deleteThumbnailFile(String filePath) throws IOException {
+        if (filePath != null && !filePath.isBlank()) {
+            String fileName = Paths.get(filePath).getFileName().toString();
+            Files.deleteIfExists(uploadDir.resolve(fileName));
+        }
     }
 }

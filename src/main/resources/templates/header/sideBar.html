@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>HavenShop - Sidebar</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+
+    <link href="/css/NavBar.css" rel="stylesheet">
+
+    <style>
+        .sidebar .nav-link.active,
+        .sidebar .nav-link:focus,
+        .sidebar .nav-link:visited,
+        .sidebar .nav-link.show {
+            background-color: #ffffff !important;
+            color: #212529 !important;
+        }
+
+        .sidebar .nav-link:hover {
+            background-color: #f8f9fa;
+            color: #000;
+        }
+
+        .sidebar .collapse .nav-link {
+            border-radius: 6px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="sidebar d-flex flex-column">
+    <a href="/overview" class="brand mb-3 fw-bold fs-5 text-dark">HavenShop</a>
+
+    <div class="text-center mb-4">
+        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="avatar" class="avatar" width="80">
+        <div class="fw-bold">Hồng Thơm</div>
+        <div class="text-muted" style="font-size: 14px;">Admin</div>
+    </div>
+
+    <ul class="nav nav-pills flex-column">
+
+        <!-- Template cho từng mục -->
+        <li class="nav-item mb-2">
+            <a class="nav-link text-dark collapsed" data-bs-toggle="collapse" href="#menuHangHoa" role="button" aria-expanded="false">
+                <i class="bi bi-box"></i> Hàng Hóa
+            </a>
+            <div class="collapse submenu" id="menuHangHoa">
+                <a class="nav-link text-dark" href="/listProduct">Danh Sách Hàng Hóa</a>
+                <a class="nav-link text-dark" href="/product_details/hienThi">Nhập Hàng</a>
+            </div>
+        </li>
+
+        <li class="nav-item mb-2">
+            <a class="nav-link text-dark collapsed" data-bs-toggle="collapse" href="#menuDonHang" role="button" aria-expanded="false">
+                <i class="bi bi-receipt"></i> Đơn Hàng
+            </a>
+            <div class="collapse submenu" id="menuDonHang">
+                <a class="nav-link text-dark" href="#">Đặt Hàng</a>
+                <a class="nav-link text-dark" href="#">Hóa Đơn</a>
+                <a class="nav-link text-dark" href="#">Trả Hàng</a>
+                <a class="nav-link text-dark" href="#">Đối Tác Giao Hàng</a>
+                <a class="nav-link text-dark" href="#">Vận Đơn</a>
+            </div>
+        </li>
+
+        <li class="nav-item mb-2">
+            <a class="nav-link text-dark collapsed" data-bs-toggle="collapse" href="#menuSanPham" role="button" aria-expanded="false">
+                <i class="bi bi-tags"></i> Sản Phẩm
+            </a>
+            <div class="collapse submenu" id="menuSanPham">
+                <a class="nav-link text-dark" href="/products/hienThi">Sản Phẩm</a>
+                <a class="nav-link text-dark" href="/colors/hienThi">Màu Sắc</a>
+                <a class="nav-link text-dark" href="/product_images/hienThi">Quản Lý Ảnh</a>
+                <a class="nav-link text-dark" href="/sizes/hienThi">Kích Thước</a>
+                <a class="nav-link text-dark" href="/product_materials/hienThi">Chất Liệu</a>
+                <a class="nav-link text-dark" href="/categories/hienThi">Phân Loại</a>
+                <a class="nav-link text-dark" href="/brands/hienThi">Thương Hiệu</a>
+                <a class="nav-link text-dark" href="/discounts/hienThi">Giảm Giá</a>
+            </div>
+        </li>
+
+        <li class="nav-item mb-2">
+            <a class="nav-link text-dark collapsed" data-bs-toggle="collapse" href="#menuPhanTich" role="button" aria-expanded="false">
+                <i class="bi bi-bar-chart-line"></i> Phân Tích
+            </a>
+            <div class="collapse submenu" id="menuPhanTich">
+                <a class="nav-link text-dark" href="#">Cuối Ngày</a>
+                <a class="nav-link text-dark" href="#">Bán Hàng</a>
+                <a class="nav-link text-dark" href="#">Đặt Hàng</a>
+                <a class="nav-link text-dark" href="#">Hàng Hóa</a>
+                <a class="nav-link text-dark" href="#">Khách Hàng</a>
+                <hr>
+                <a class="nav-link text-dark" href="#">Nhà Cung Cấp</a>
+                <a class="nav-link text-dark" href="/staff/list">Nhân Viên</a>
+            </div>
+        </li>
+
+        <li class="nav-item mb-2">
+            <a class="nav-link text-dark collapsed" data-bs-toggle="collapse" href="#menuOnline" role="button" aria-expanded="false">
+                <i class="bi bi-globe2"></i> Bán Online
+            </a>
+            <div class="collapse submenu" id="menuOnline">
+                <a class="nav-link text-dark" href="/DirectSales">Bán Hàng tại quầy</a>
+                <a class="nav-link text-dark" href="#">WebSite Bán hàng</a>
+            </div>
+        </li>
+
+        <li class="nav-item mb-2">
+            <a href="#" class="nav-link text-dark">
+                <i class="bi bi-person"></i> Khách Hàng
+            </a>
+        </li>
+
+        <li class="nav-item mb-2">
+            <a href="#" class="nav-link text-dark">
+                <i class="bi bi-cash-coin"></i> Số Quỹ
+            </a>
+        </li>
+
+    </ul>
+</div>
+
+</body>
+</html>

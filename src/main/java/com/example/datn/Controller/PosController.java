@@ -78,15 +78,6 @@ public class PosController {
                     items.add(item);
 
                 }
-
-                order_items item = new order_items();
-                item.setProductDetails(pd);
-                item.setQuantity(quantity);
-                item.setUnitPrice(pd.getProduct().getUnitPrice());
-                item.setDiscountPrice(pd.getProduct().getDiscountPrice());
-                item.setTotalPrice(price.multiply(BigDecimal.valueOf(quantity)));
-
-                items.add(item);
             }
 
             // Tạo đơn hàng

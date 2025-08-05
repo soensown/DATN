@@ -28,7 +28,7 @@ public class ordersController {
     @Autowired
     ordersRepository ordersRepo;
 
-    // ✅ Hiển thị danh sách hóa đơn (TRỪ những cái đã xóa)
+
     @GetMapping
     public String showAllOrders(Model model) {
         List<orders> ordersList = ordersRepo.findByStatusNot("deleted");

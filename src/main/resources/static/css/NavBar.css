@@ -1,51 +1,83 @@
-/* Hiện dropdown khi hover */
-.nav-item.dropdown:hover .dropdown-menu {
-    display: block;
-    margin-top: 0;
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
 }
 
-/* Hiệu ứng hover */
-.nav-item a:hover, .dropdown-menu li a:hover {
-    background-color: #cccccc;
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #f8f9fa;
+    padding: 20px;
 }
-/* Xử lý đóng các dropdown khác */
-.navbar .dropdown-menu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: #eeeeee;
-    display: none;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    min-width: 150px;
+
+.sidebar .nav-link {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
-.dropdown-menu li a {
-    padding: 10px 15px;
-    color: gray;
-    display: block;
+
+.sidebar .nav-link:hover {
+    background-color: #e9ecef;
+    border-radius: 6px;
 }
-.navbar{
-    position: fixed;
-    text-decoration: none;
-    width: 100%;
-    background-color: #333;
-    padding: 10px 20px;
-    z-index: 999;
+
+.avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin-bottom: 10px;
 }
-.nav-item {
-    position: relative;
-}
-.nav-item a {
+
+.sidebar .brand {
+    font-size: 20px;
+    font-weight: bold;
     color: gray;
     text-decoration: none;
-    padding: 10px 15px;
-    display: block;
 }
-.nav {
-    list-style: none;
+body {
     margin: 0;
-    padding: 0;
+    font-family: Arial, sans-serif;
     display: flex;
 }
+
+.sidebar {
+    width: 250px;
+    color: #fff;
+    min-height: 100vh;
+    padding-top: 20px;
+    position: fixed;
+}
+
+.sidebar .logo {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+.sidebar .nav {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar .nav li {
+    padding: 15px 20px;
+}
+
+.sidebar .nav li a {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+}
+
+.sidebar .nav li:hover {
+    background-color: #f8f9fa;
+}
+
+.main-content {
+    margin-left: 250px;
+    padding: 20px;
+    width: calc(100% - 250px);
+}
+
