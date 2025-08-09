@@ -1,6 +1,6 @@
 package com.example.datn.Controller;
 
-import com.example.datn.Model.Product_details;
+import com.example.datn.Model.ProductDetails;
 import com.example.datn.Model.Product_images;
 import com.example.datn.repository.product_detailsRepository;
 import com.example.datn.repository.product_imagesRepository;
@@ -48,7 +48,7 @@ public class product_imagesController {
 
             String imageUrl = saveThumbnail(file);
 
-            Product_details detail = detailRepo.findById(detailId).orElse(null);
+            ProductDetails detail = detailRepo.findById(detailId).orElse(null);
             if (detail == null) return "redirect:/product_images/hienThi?error=detailNotFound";
 
             Product_images image = new Product_images();

@@ -1,6 +1,6 @@
 package com.example.datn.Controller;
 
-import com.example.datn.Model.Product_details;
+import com.example.datn.Model.ProductDetails;
 
 import com.example.datn.Model.Products;
 import com.example.datn.repository.product_detailsRepository;
@@ -21,7 +21,7 @@ public class ServiceController {
     private product_detailsRepository productDetailsRepository;
     @Autowired
     private productsRepository productsRepository;
-    @GetMapping("/")
+    @GetMapping
     public String home(Model model) {
         List<Products> productList = productsRepository.findTop10ByOrderByCreatedDateDesc();
 
@@ -62,7 +62,7 @@ public class ServiceController {
     }
     @GetMapping("/pos")
     public String showPOS(Model model) {
-        List<Product_details> productDetails = productDetailsRepository.findAll();
+        List<ProductDetails> productDetails = productDetailsRepository.findAll();
         model.addAttribute("productDetails", productDetails);
         return "/page/pos";
     }

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+
+      lang="vi"
+>
+<head>
+  <meta charset="UTF-8">
+  <title>Giỏ hàng</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav th:replace="/header/NavbarProducts.html"></nav>
+<div class="container mt-5">
+  <h2 class="mb-4">Giỏ hàng của bạn</h2>
+
+  <div th:if="${#lists.isEmpty(cartItems)}" class="alert alert-info">
+    Giỏ hàng của bạn đang trống.
+    <a href="/products" class="btn btn-primary btn-sm ms-3">Mua sắm ngay</a>
+  </div>
+
+  <form th:if="${not #lists.isEmpty(cartItems)}" method="post" action="/cart/checkout">
+    <table class="table table-bordered">
+      <thead>
+      <tr>
+        <th>Ảnh</th>
+        <th>Sản phẩm</th>
+        <th>Màu / Size</th>
+        <th>Giá</th>
+        <th>Số lượng</th>
+        <th>Thành tiền</th>
+        <th>Thao tác</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="item : ${cartItems}">
+        <td>
+          <img th:src="@{${item.productDetail.product.thumbnail}}" alt="thumb"
+               width="60" height="60">
+        </td>
+        <td th:text="${item.productDetail.product.productName}"></td>
+        <td>
+          <span th:text="${item.productDetail.color.name}"></span> /
+          <span th:text="${item.productDetail.size.name}"></span>
+        </td>
+        <td th:text="${#numbers.formatDecimal(item.productDetail.product.unitPrice, 0, 'COMMA', '.', '') + '₫'}"></td>
+        <td>
+          <input type="number" name="quantities"
+                 th:value="${item.quantity}" min="1" class="form-control" style="width: 80px;">
+        </td>
+        <td th:text="${#numbers.formatDecimal(item.quantity * item.productDetail.product.unitPrice, 0, 'COMMA', '.', '') + '₫'}"></td>
+        <td>
+          <a th:href="@{'/cart/remove/' + ${item.cartId}}" class="btn btn-danger btn-sm">Xóa</a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div class="text-end">
+      <a href="/products" class="btn btn-secondary">Tiếp tục mua hàng</a>
+      <button type="submit" class="btn btn-success">Tiến hành thanh toán</button>
+    </div>
+  </form>
+</div>
+
+</body>
+</html>

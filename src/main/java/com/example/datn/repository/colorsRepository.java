@@ -13,6 +13,6 @@ public interface colorsRepository extends JpaRepository<Colors, Integer> {
     @Query("SELECT c FROM Colors c WHERE c.colorName LIKE %?1% OR c.colorCode LIKE %?1%")
     List<Colors> searchByNameOrCode(String keyword);
 
-    @Query("SELECT c FROM Colors c JOIN Product_details pd ON pd.color = c WHERE pd.product.id = :productId")
+    @Query("SELECT c FROM Colors c JOIN ProductDetails pd ON pd.color = c WHERE pd.product.id = :productId")
     List<Colors> findByProductId(@Param("productId") String productId);
 }

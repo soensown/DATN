@@ -2,7 +2,7 @@ package com.example.datn.Controller;
 
 import com.example.datn.Model.Order_items;
 import com.example.datn.Model.Orders;
-import com.example.datn.Model.Product_details;
+import com.example.datn.Model.ProductDetails;
 import com.example.datn.repository.order_itemsRepository;
 import com.example.datn.repository.ordersRepository;
 import com.example.datn.repository.product_detailsRepository;
@@ -63,7 +63,7 @@ public class PosController {
                     BigDecimal price = new BigDecimal(parts[2].trim());
                     int quantity = Integer.parseInt(parts[3].trim());
 
-                    Product_details pd = productDetailsRepository.findById(productDetailId).orElse(null);
+                    ProductDetails pd = productDetailsRepository.findById(productDetailId).orElse(null);
                     if (pd == null) continue;
 
                     Order_items item = new Order_items();

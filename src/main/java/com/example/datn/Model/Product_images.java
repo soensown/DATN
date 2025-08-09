@@ -20,7 +20,7 @@ public class Product_images {
 
     @ManyToOne
     @JoinColumn(name = "product_detail_id")
-    private Product_details product_details;
+    private ProductDetails product_details;
 
     @Column(name = "image_url")
     @NotBlank(message = "Không được để trống")

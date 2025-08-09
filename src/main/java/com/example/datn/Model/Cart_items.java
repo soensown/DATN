@@ -17,13 +17,14 @@ import java.util.Date;
 @Table(name = "cart_items")
 public class Cart_items {
     @Id
+    @Column(name = "cart_id")
     private String id;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users user;
     @ManyToOne
     @JoinColumn(name = "product_detail_id")
-    private Product_details product_details;
+    private ProductDetails productDetails;
     @Column(name = "quantity")
     private int quantity;
     @Column(name = "created_date")

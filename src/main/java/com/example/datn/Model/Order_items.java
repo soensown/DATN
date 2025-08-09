@@ -24,7 +24,7 @@ public class Order_items {
     private Orders order;
     @ManyToOne
     @JoinColumn(name = "product_detail_id")
-    private Product_details productDetails;
+    private ProductDetails productDetails;
     @Column(name = "quantity")
     @NotNull(message = "Không được bỏ trống số lượng")
     private Integer quantity;
