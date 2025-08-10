@@ -34,22 +34,30 @@
       <tbody>
       <tr th:each="item : ${cartItems}">
         <td>
-          <img th:src="@{${item.productDetail.product.thumbnail}}" alt="thumb"
+          <img th:src="@{${item.productDetails.product.thumbnail}}" alt="thumb"
                width="60" height="60">
         </td>
-        <td th:text="${item.productDetail.product.productName}"></td>
+        <td th:text="${item.productDetails.product.productName}"></td>
         <td>
-          <span th:text="${item.productDetail.color.name}"></span> /
-          <span th:text="${item.productDetail.size.name}"></span>
+          <span th:text="${item.productDetails.color.colorName}"></span> /
+          <span th:text="${item.productDetails.size.size}"></span>
         </td>
-        <td th:text="${#numbers.formatDecimal(item.productDetail.product.unitPrice, 0, 'COMMA', '.', '') + '₫'}"></td>
+        <td th:text="${#numbers.formatDecimal(item.productDetails.product.unitPrice, 0, 'COMMA', 0, 'POINT')} + '₫'"></td>
+
         <td>
-          <input type="number" name="quantities"
-                 th:value="${item.quantity}" min="1" class="form-control" style="width: 80px;">
+          <input type="number" min="1" class="form-control quantity-input"
+                 style="width: 80px;"
+                 th:data-price="${item.productDetails.product.unitPrice}"
+                 th:data-id="${item.id}"
+                 th:value="${item.quantity}">
+
         </td>
-        <td th:text="${#numbers.formatDecimal(item.quantity * item.productDetail.product.unitPrice, 0, 'COMMA', '.', '') + '₫'}"></td>
+
+
+        <td th:id="'total-' + ${item.id}" th:text="${#numbers.formatDecimal(item.quantity * item.productDetails.product.unitPrice, 0, 'COMMA', 0, 'POINT')} + '₫'"></td>
+
         <td>
-          <a th:href="@{'/cart/remove/' + ${item.cartId}}" class="btn btn-danger btn-sm">Xóa</a>
+          <a th:href="@{'/cart/remove/' + ${item.id}}" class="btn btn-danger btn-sm">Xóa</a>
         </td>
       </tr>
       </tbody>
@@ -61,6 +69,34 @@
     </div>
   </form>
 </div>
+
+<script>
+  document.querySelectorAll('.quantity-input').forEach(input => {
+    input.addEventListener('change', function() {
+      let price = parseFloat(this.dataset.price);
+      let quantity = parseInt(this.value);
+      let id = this.dataset.id;
+
+      if (quantity < 1) {
+        this.value = 1;
+        quantity = 1;
+      }
+
+
+      let totalCell = document.getElementById("total-" + id);
+      let total = price * quantity;
+      totalCell.textContent = total.toLocaleString('vi-VN') + '₫';
+
+      fetch(`/cart/update/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `quantity=${quantity}`
+      });
+    });
+  });
+</script>
 
 </body>
 </html>

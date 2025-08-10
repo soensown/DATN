@@ -4,6 +4,27 @@ body {
     height: 200vh;
     font-family: sans-serif;
 }
+
+.color-btn, .size-btn {
+    padding: 8px 12px;
+    margin: 3px;
+    border: 1px solid #ccc;
+    background-color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.color-btn:hover, .size-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.color-btn.selected, .size-btn.selected {
+    background-color: #ccc;  /* màu xám khi được chọn */
+    color: white;
+    border-color: #999;
+}
+
 .splide__slide {
 
     display: flex;
@@ -23,4 +44,19 @@ body {
 .product-card{
     align-items: center;
     justify-content: center;
+}
+.option {
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    cursor: pointer;
+    margin: 4px;
+    display: inline-block;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+input[type="radio"]:checked + label,
+input[type="checkbox"]:checked + label {
+    background-color: #ccc;
+    border-color: #999;
 }

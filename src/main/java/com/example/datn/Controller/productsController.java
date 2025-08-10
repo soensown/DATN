@@ -1,6 +1,7 @@
 package com.example.datn.Controller;
 
 import com.example.datn.Model.Colors;
+import com.example.datn.Model.ProductDetails;
 import com.example.datn.Model.Products;
 import com.example.datn.Model.Sizes;
 import com.example.datn.repository.*;
@@ -27,7 +28,8 @@ public class productsController {
 
     @Autowired
     private productsRepository productsRepo;
-
+    @Autowired
+    private  product_detailsRepository productDetailsRepo;
     @Autowired
     private brandsRepository brandsRepo;
 
@@ -167,34 +169,43 @@ public class productsController {
     @GetMapping("/{id}")
     public String getProductDetail(@PathVariable("id") String id, Model model) {
         Optional<Products> productOpt = productsRepo.findById(id);
-        if (productOpt.isPresent()) {
-            Products product = productOpt.get();
-
-            List<Colors> colorList = colorsRepo.findByProductId(id);
-            List<Sizes> sizeList = sizesRepo.findByProductId(id);
-
-
-
-            BigDecimal unitPrice = product.getUnitPrice();
-            BigDecimal finalPrice = unitPrice;
-            boolean isDiscount = false;
-
-            String formattedPrice = formatCurrency(unitPrice);
-            String formattedFinalPrice = formatCurrency(finalPrice);
-
-
-            model.addAttribute("product", product);
-            model.addAttribute("colorList", colorList);
-            model.addAttribute("sizeList", sizeList);
-            model.addAttribute("isDiscount", isDiscount);
-            model.addAttribute("formattedPrice", formattedPrice);
-            model.addAttribute("formattedFinalPrice", formattedFinalPrice);
-
-            return "/page/product_detail_user";
-        } else {
+        if (productOpt.isEmpty()) {
             return "redirect:/";
         }
+
+        Products product = productOpt.get();
+
+        // Lấy danh sách ProductDetails cho sản phẩm
+        List<ProductDetails> productDetailsList = productDetailsRepo.findByProduct(product);
+
+        // Tách danh sách màu & size không trùng
+        Set<String> colors = new LinkedHashSet<>();
+        Set<String> sizes = new LinkedHashSet<>();
+        for (ProductDetails pd : productDetailsList) {
+            colors.add(pd.getColor().getColorName());
+            sizes.add(pd.getSize().getSize());
+        }
+
+        // Giá
+        BigDecimal unitPrice = product.getUnitPrice();
+        BigDecimal finalPrice = unitPrice;
+        boolean isDiscount = false; // bạn có thể tính lại nếu có giảm giá
+
+        String formattedPrice = formatCurrency(unitPrice);
+        String formattedFinalPrice = formatCurrency(finalPrice);
+
+        // Gửi data sang view
+        model.addAttribute("product", product);
+        model.addAttribute("productDetailsList", productDetailsList);
+        model.addAttribute("colors", colors);
+        model.addAttribute("sizes", sizes);
+        model.addAttribute("isDiscount", isDiscount);
+        model.addAttribute("formattedPrice", formattedPrice);
+        model.addAttribute("formattedFinalPrice", formattedFinalPrice);
+
+        return "/page/product_detail_user";
     }
+
 
     private String formatCurrency(BigDecimal amount) {
         NumberFormat vnFormat = NumberFormat.getInstance(new Locale("vi", "VN"));

@@ -10,10 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.Date;
@@ -34,34 +31,43 @@ public class cart_itemsController {
     @GetMapping
     public String showCart(Model model, Principal principal) {
         if (principal == null) {
-            return "redirect:/login?message=login_required";
+            return "redirect:/login";
         }
 
+
         String username = principal.getName();
-        Users user = usersRepository.findByUsername(username).get();
+        Users user = usersRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy user"));
+
 
         List<Cart_items> cartItems = cartItemsRepository.findByUser(user);
+
         model.addAttribute("cartItems", cartItems);
 
         return "/page/cart";
     }
 
+
     @PostMapping("/add")
     public String addToCart(@RequestParam("productDetailId") String productDetailId,
                             @RequestParam("quantity") int quantity,
-                            HttpSession session) {
+                            Principal principal) {
 
-        Users user = (Users) session.getAttribute("loggedInUser");
+        if (principal == null) {
+            return "redirect:/login";
+        }
+
+        String username = principal.getName();
+        Users user = usersRepository.findByUsername(username).orElse(null);
         if (user == null) {
             return "redirect:/login";
         }
 
         ProductDetails productDetail = productDetailsRepo.findById(productDetailId).orElse(null);
         if (productDetail == null) {
-            return "redirect:/products"; // không tìm thấy sản phẩm
+            return "redirect:/products";
         }
 
-        // kiểm tra nếu đã có thì cập nhật số lượng
         Cart_items existingItem = cartItemsRepository.findByUserAndProductDetails(user, productDetail);
         if (existingItem != null) {
             existingItem.setQuantity(existingItem.getQuantity() + quantity);
@@ -83,6 +89,28 @@ public class cart_itemsController {
         return "redirect:/cart";
     }
 
+
+    @PostMapping("/update/{id}")
+    @ResponseBody
+    public String updateCartItem(@PathVariable("id") String id,
+                                 @RequestParam("quantity") int quantity,
+                                 Principal principal) {
+        if (principal == null) return "not_logged_in";
+
+        String username = principal.getName();
+        Users user = usersRepository.findByUsername(username).orElse(null);
+        if (user == null) return "not_logged_in";
+
+        Cart_items item = cartItemsRepository.findById(id).orElse(null);
+        if (item != null && item.getUser().getId().equals(user.getId())) {
+            item.setQuantity(quantity);
+            item.setUpdated_date(new Date());
+            item.setUpdated_by(user.getUsername());
+            cartItemsRepository.save(item);
+            return "success";
+        }
+        return "error";
+    }
     // 🛠 Cập nhật số lượng
     @PostMapping("/update")
     public String updateCartItem(@RequestParam("cartItemId") String cartItemId,
