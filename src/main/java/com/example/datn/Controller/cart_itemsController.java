@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.Date;
 import java.util.List;
@@ -38,12 +39,14 @@ public class cart_itemsController {
         String username = principal.getName();
         Users user = usersRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy user"));
-
-
         List<Cart_items> cartItems = cartItemsRepository.findByUser(user);
+        BigDecimal total = cartItems.stream()
+                .map(item -> item.getProductDetails().getProduct().getUnitPrice()
+                        .multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         model.addAttribute("cartItems", cartItems);
-
+        model.addAttribute("totalPrice", total);
         return "/page/cart";
     }
 
@@ -111,7 +114,7 @@ public class cart_itemsController {
         }
         return "error";
     }
-    // 🛠 Cập nhật số lượng
+
     @PostMapping("/update")
     public String updateCartItem(@RequestParam("cartItemId") String cartItemId,
                                  @RequestParam("quantity") int quantity,
@@ -136,7 +139,7 @@ public class cart_itemsController {
         return "redirect:/cart";
     }
 
-    // ❌ Xóa sản phẩm khỏi giỏ hàng
+
     @PostMapping("/delete")
     public String deleteCartItem(@RequestParam("cartItemId") String cartItemId,
                                  HttpSession session) {

@@ -53,15 +53,21 @@
 
         </td>
 
-
         <td th:id="'total-' + ${item.id}" th:text="${#numbers.formatDecimal(item.quantity * item.productDetails.product.unitPrice, 0, 'COMMA', 0, 'POINT')} + '₫'"></td>
 
         <td>
-          <a th:href="@{'/cart/remove/' + ${item.id}}" class="btn btn-danger btn-sm">Xóa</a>
+          <a th:href="@{'/cart/delete/' + ${item.id}}" class="btn btn-danger btn-sm">Xóa</a>
         </td>
       </tr>
       </tbody>
     </table>
+    <div class="text-end mt-3">
+      <h5>
+        Tạm Tính:
+        <span id="cart-total" th:text="${#numbers.formatDecimal(totalPrice, 0, 'POINT', 0 , 'COMMA')} + '₫'"></span>
+      </h5>
+    </div>
+
 
     <div class="text-end">
       <a href="/products" class="btn btn-secondary">Tiếp tục mua hàng</a>
@@ -70,7 +76,18 @@
   </form>
 </div>
 
+
 <script>
+  function updateCartTotal() {
+    let sum = 0;
+    document.querySelectorAll('td[id^="total-"]').forEach(td => {
+
+      let value = td.textContent.replace(/[₫,.]/g, '');
+      sum += parseFloat(value) || 0;
+    });
+    document.getElementById("cart-total").textContent = sum.toLocaleString('vi-VN') + '₫';
+  }
+
   document.querySelectorAll('.quantity-input').forEach(input => {
     input.addEventListener('change', function() {
       let price = parseFloat(this.dataset.price);
@@ -86,6 +103,10 @@
       let totalCell = document.getElementById("total-" + id);
       let total = price * quantity;
       totalCell.textContent = total.toLocaleString('vi-VN') + '₫';
+
+
+      updateCartTotal();
+
 
       fetch(`/cart/update/${id}`, {
         method: 'POST',
