@@ -1,8 +1,11 @@
 package com.example.datn.Config;
 
+import com.example.datn.Model.Products;
 import com.example.datn.Model.Users;
+import com.example.datn.repository.productsRepository;
 import com.example.datn.repository.usersRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,21 +16,30 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.util.List;
+
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
+
     private final usersRepository userRepository;
+    @Autowired
+    private productsRepository productRepository;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        List<Products> products = productRepository.findAll();
+
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**", "/ImgSystem/**").permitAll()
+                        .requestMatchers("/", "/login", "/register", "/css/**", "/js/**", "/images/**", "/updates/**", "/ImgSystem/**").permitAll()
+                        .requestMatchers("/products/**").permitAll()
+                        .requestMatchers("/cart/**").authenticated()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/register").anonymous()
                         .requestMatchers("/staff/**").hasAnyRole("STAFF", "ADMIN")
                         .anyRequest().authenticated()
                 )
+
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/", true)

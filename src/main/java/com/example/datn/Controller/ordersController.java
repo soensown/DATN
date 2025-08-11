@@ -2,7 +2,7 @@ package com.example.datn.Controller;
 
 import com.example.datn.Model.Order_items;
 import com.example.datn.Model.Orders;
-import com.example.datn.Model.Product_details;
+import com.example.datn.Model.ProductDetails;
 import com.example.datn.repository.order_itemsRepository;
 import com.example.datn.repository.ordersRepository;
 import com.example.datn.repository.product_detailsRepository;
@@ -40,7 +40,7 @@ public class ordersController {
     @GetMapping("/details/{orderId}")
     public String getOrderItems(@PathVariable String orderId, Model model) {
         List<Order_items> orderItems = orderItemsRepo.findByOrder_Id(orderId);
-        List<Product_details> productDetails = productDetailsRepo.findAll();
+        List<ProductDetails> productDetails = productDetailsRepo.findAll();
 
         model.addAttribute("orderItems", orderItems);
         model.addAttribute("productDetails", productDetails);
@@ -86,7 +86,7 @@ public class ordersController {
                           @RequestParam("quantity") Integer quantity) {
 
         Orders order = ordersRepo.findById(orderId).orElseThrow();
-        Product_details pd = productDetailsRepo.findById(productDetailId).orElseThrow();
+        ProductDetails pd = productDetailsRepo.findById(productDetailId).orElseThrow();
 
         Order_items item = new Order_items();
         item.setOrder(order);

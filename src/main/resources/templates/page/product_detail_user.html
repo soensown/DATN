@@ -10,7 +10,6 @@
 <nav th:replace="~{/header/NavbarProducts}"></nav>
 
 <div class="product-detail">
-
     <!-- Cột ảnh -->
     <div class="product-image">
         <img th:src="@{${product.thumbnail}}" alt="Ảnh sản phẩm" width="300" height="300"/>
@@ -33,42 +32,87 @@
                       th:text="${formattedPrice}"></span>
             </div>
             <div th:unless="${isDiscount}">
-                <span style="font-weight: bold;"
-                      th:text="${formattedPrice}"></span>
+                <span style="font-weight: bold;" th:text="${formattedPrice}"></span>
             </div>
         </div>
 
         <hr>
 
         <!-- Màu sắc -->
-        <div th:if="${colorList != null}">
+        <div th:if="${colors != null}">
             <strong>Màu sắc:</strong>
-            <div th:each="color : ${colorList}" style="display: inline-block; margin: 5px 0;">
-                <button th:text="${color.colorName}" class="color-btn"></button>
+            <div style="margin: 5px 0;">
+                <button type="button" th:each="color : ${colors}"
+                        th:text="${color}" class="color-btn"
+                        onclick="selectColor(this)">
+                </button>
             </div>
         </div>
 
         <hr>
 
         <!-- Kích thước -->
-        <div th:if="${sizeList != null}">
+        <div th:if="${sizes != null}">
             <strong>Kích thước:</strong>
-            <div th:each="size : ${sizeList}" style="display: inline-block; margin: 5px 0;">
-                <button th:text="${size.size}" class="size-btn"></button>
+            <div style="margin: 5px 0;">
+                <button type="button" th:each="size : ${sizes}"
+                        th:text="${size}" class="size-btn"
+                        onclick="selectSize(this)">
+                </button>
             </div>
         </div>
 
         <hr>
 
         <!-- Mô tả -->
-        <p><strong>Thông tin chi tiết sản phẩm:</strong> <span th:text="${product.description}">Mô tả sản phẩm</span></p>
+        <p>
+            <strong>Thông tin chi tiết sản phẩm:</strong>
+            <span th:text="${product.description}">Mô tả sản phẩm</span>
+        </p>
 
-        <!-- Nút hành động -->
-        <div class="product-actions">
-            <button>Thêm vào giỏ hàng</button>
-            <button>Mua ngay</button>
-        </div>
+        <!-- Form thêm vào giỏ -->
+        <form th:action="@{/cart/add}" method="post" id="addToCartForm">
+            <input type="hidden" name="productDetailId" id="productDetailId">
+            <input type="number" name="quantity" value="1" min="1">
+            <div class="product-actions">
+                <button type="submit">Thêm vào giỏ hàng</button>
+                <button type="button">Mua ngay</button>
+            </div>
+        </form>
     </div>
 </div>
+
+<script th:inline="javascript">
+    let selectedColor = null;
+    let selectedSize = null;
+    const productDetails = /*[[${productDetailsList}]]*/ [];
+
+    function selectColor(btn) {
+        selectedColor = btn.textContent;
+        document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        updateProductDetailId();
+    }
+
+    function selectSize(btn) {
+        selectedSize = btn.textContent;
+        document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        updateProductDetailId();
+    }
+
+    function updateProductDetailId() {
+        if (selectedColor && selectedSize) {
+            const match = productDetails.find(pd =>
+                pd.color.colorName === selectedColor &&
+                pd.size.size === selectedSize
+            );
+            if (match) {
+                document.getElementById('productDetailId').value = match.id;
+            }
+        }
+    }
+</script>
+
 </body>
 </html>

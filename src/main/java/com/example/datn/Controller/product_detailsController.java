@@ -1,6 +1,6 @@
 package com.example.datn.Controller;
 
-import com.example.datn.Model.Product_details;
+import com.example.datn.Model.ProductDetails;
 import com.example.datn.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -32,13 +32,13 @@ public class product_detailsController {
                            Model model) {
 
         Pageable pageable = PageRequest.of(page, size);
-        Page<Product_details> list = (keyword != null && !keyword.isBlank())
+        Page<ProductDetails> list = (keyword != null && !keyword.isBlank())
                 ? repo.findByDescriptionContainingIgnoreCase(keyword, pageable)
                 : repo.findAll(pageable);
 
-        Product_details detail = (editId != null)
-                ? repo.findById(editId).orElse(new Product_details())
-                : new Product_details();
+        ProductDetails detail = (editId != null)
+                ? repo.findById(editId).orElse(new ProductDetails())
+                : new ProductDetails();
 
         model.addAttribute("productDetail", detail); // dùng cho form
         model.addAttribute("products", productRepo.findAll());
@@ -53,7 +53,7 @@ public class product_detailsController {
 
 
     @PostMapping("/save")
-    public String save(@ModelAttribute("productDetail") Product_details detail) {
+    public String save(@ModelAttribute("productDetail") ProductDetails detail) {
         // Chỉ thêm mới (không cho phép override nếu ID tồn tại)
         if (repo.existsById(detail.getId())) {
             // Có thể thêm thông báo lỗi hoặc redirect
@@ -65,7 +65,7 @@ public class product_detailsController {
 
 
     @PostMapping("/update")
-    public String update(@ModelAttribute Product_details detail) {
+    public String update(@ModelAttribute ProductDetails detail) {
         if (!repo.existsById(detail.getId())) {
             // Không tồn tại ID thì out ra màn hình hiển thị
             return "redirect:/product_details/hienThi?error=notfound";

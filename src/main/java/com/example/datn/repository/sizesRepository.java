@@ -15,6 +15,6 @@ public interface sizesRepository extends JpaRepository<Sizes, Integer> {
     boolean existsBySizeIgnoreCase(String size);
     Page<Sizes> findBySizeContainingIgnoreCase(String keyword, Pageable pageable);
 
-    @Query("SELECT s FROM Sizes s JOIN Product_details pd ON pd.size = s WHERE pd.product.id = :productId")
+    @Query("SELECT s FROM Sizes s JOIN ProductDetails pd ON pd.size = s WHERE pd.product.id = :productId")
     List<Sizes> findByProductId(@Param("productId") String productId);
 }
