@@ -22,7 +22,7 @@ import java.util.UUID;
 public class brandsController {
     @Autowired
     brandsRepository brandsRepo;
-    //Dường dẫn lưu file
+
     private final Path uploadDir = Paths.get(System.getProperty("user.dir"), "updates");
 
     @GetMapping("/hienThi")

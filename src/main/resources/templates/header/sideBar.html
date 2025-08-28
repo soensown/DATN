@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>HavenShop - Sidebar</title>
@@ -39,8 +40,7 @@
 
     <div class="text-center mb-4">
         <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="avatar" class="avatar" width="80">
-        <div class="fw-bold">Hồng Thơm</div>
-        <div class="text-muted" style="font-size: 14px;">Admin</div>
+        <div style="color: #343a40" sec:authentication="name"></div>
     </div>
 
     <ul class="nav nav-pills flex-column">
@@ -102,13 +102,9 @@
         </li>
 
         <li class="nav-item mb-2">
-            <a class="nav-link text-dark collapsed" data-bs-toggle="collapse" href="#menuOnline" role="button" aria-expanded="false">
-                <i class="bi bi-globe2"></i> Bán Online
+            <a class="nav-link text-dark collapsed" href="/pos" role="button" aria-expanded="false">
+                <i class="bi bi-globe2"></i> Bán Hàng
             </a>
-            <div class="collapse submenu" id="menuOnline">
-                <a class="nav-link text-dark" href="/DirectSales">Bán Hàng tại quầy</a>
-                <a class="nav-link text-dark" href="#">WebSite Bán hàng</a>
-            </div>
         </li>
 
         <li class="nav-item mb-2">
