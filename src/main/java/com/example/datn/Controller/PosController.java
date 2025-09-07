@@ -43,7 +43,7 @@ public class PosController {
             BigDecimal amountPaid = new BigDecimal(amountPaidStr.trim());
 
             if (amountPaid.compareTo(totalPrice) < 0) {
-                model.addAttribute("errorMessage", "❌ Tiền khách đưa không đủ!");
+                model.addAttribute("errorMessage", "Tiền khách đưa không đủ!");
                 return "/page/ErrosPos";
             }
 
@@ -51,7 +51,7 @@ public class PosController {
             String[] productLines = cartData.split(";");
 
             if (productLines.length == 0) {
-                model.addAttribute("errorMessage", "❌ Giỏ hàng trống!");
+                model.addAttribute("errorMessage", "Giỏ hàng trống!");
                 return "/page/ErrosPos";
             }
 
@@ -80,7 +80,7 @@ public class PosController {
                 }
             }
 
-            // Tạo đơn hàng
+
             Orders order = new Orders();
             order.setId(UUID.randomUUID().toString());
             order.setTotalPrice(totalPrice);
@@ -92,18 +92,18 @@ public class PosController {
 
             orderRepository.save(order);
 
-            // Lưu các sản phẩm trong hóa đơn
+
             for (Order_items item : items) {
                 item.setOrder(order);
                 orderItemsRepository.save(item);
             }
 
-            session.setAttribute("successMessage", "✅ Thanh toán thành công!");
+            session.setAttribute("successMessage", " Thanh toán thành công!");
             return "redirect:/pos";
 
         } catch (Exception e) {
             e.printStackTrace();
-            model.addAttribute("errorMessage", "❌ Lỗi xử lý thanh toán: " + e.getMessage());
+            model.addAttribute("errorMessage", " Lỗi xử lý thanh toán: " + e.getMessage());
             return "/page/ErrosPos";
         }
     }

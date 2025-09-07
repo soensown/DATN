@@ -41,15 +41,15 @@ public class AuthController {
 
     @PostMapping("/register")
     public String processRegister(@ModelAttribute("user") Users user) {
-        // Mã hóa mật khẩu
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        // Gán role mặc định là ROLE_USER
+
         Roles roleUser = roleRepository.findByRoleCode("CUSTOMER")
                 .orElseThrow(() -> new RuntimeException("ROLE_USER not found"));
         user.setRole(roleUser);
 
-        // Set các giá trị khác
+
         user.setCreatedDate(LocalDateTime.now());
         user.setUpdatedDate(LocalDateTime.now());
         user.setDel(false);

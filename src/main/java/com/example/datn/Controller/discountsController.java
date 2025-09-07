@@ -4,105 +4,74 @@ import com.example.datn.Model.Discounts;
 import com.example.datn.repository.discountsRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/discounts")
 public class discountsController {
-
     @Autowired
-    private discountsRepository discountsRepo;
+    private discountsRepository discountRepo;
 
     @GetMapping("/hienThi")
-    public String hienThi(Model model,
-                          @RequestParam(defaultValue = "0") int page,
-                          @RequestParam(defaultValue = "5") int size,
-                          @RequestParam(required = false) String keyword,
-                          @RequestParam(required = false) String type) {
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-        Page<Discounts> pageDiscounts;
-
+    public String hienThi(Model model, @RequestParam(value = "keyword", required = false) String keyword) {
+        List<Discounts> list;
         if (keyword != null && !keyword.trim().isEmpty()) {
-            // Tìm kiếm theo keyword (ví dụ tìm theo code hoặc description)
-            pageDiscounts = discountsRepo.searchByDescription(keyword.trim(), pageable);
-            model.addAttribute("keyword", keyword);
-        } else if (type != null && !type.trim().isEmpty()) {
-            // Tìm theo type nếu có
-            pageDiscounts = discountsRepo.findByDiscountType(type.trim(), pageable);
-            model.addAttribute("type", type);
+            list = discountRepo.findByIdContainingOrDescriptionContainingIgnoreCase(keyword, keyword);
         } else {
-            // Hiển thị tất cả nếu không có từ khóa hoặc type
-            pageDiscounts = discountsRepo.findAll(pageable);
+            list = discountRepo.findAll();
         }
-
-        model.addAttribute("listDiscounts", pageDiscounts.getContent());
-        model.addAttribute("totalPages", pageDiscounts.getTotalPages());
-        model.addAttribute("currentPage", page);
-
-        return "/page/discounts"; // Tên file HTML
+        model.addAttribute("discounts", list);
+        model.addAttribute("discount", new Discounts()); // dùng cho form thêm mới
+        model.addAttribute("keyword", keyword);
+        return "page/discount";
     }
 
     @PostMapping("/add")
-    public String add(@Valid Discounts discount,
-                      BindingResult result,
-                      RedirectAttributes ra,
-                      Model model,
-                      @RequestParam(defaultValue = "0") int page,
-                      @RequestParam(defaultValue = "5") int size) {
-
+    public String addDiscount(@ModelAttribute("discount") @Valid Discounts discount,
+                              BindingResult result, Model model) {
         if (result.hasErrors()) {
-            Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-            Page<Discounts> pageDiscounts = discountsRepo.findAll(pageable);
-            model.addAttribute("listDiscounts", pageDiscounts.getContent());
-            model.addAttribute("totalPages", pageDiscounts.getTotalPages());
-            model.addAttribute("currentPage", page);
-            model.addAttribute("errorMessage", "Thêm mã giảm giá thất bại.");
-            return "/page/discounts";
+            model.addAttribute("discounts", discountRepo.findAll());
+            return "page/discount";
         }
-
-        discountsRepo.save(discount);
-        ra.addFlashAttribute("successMessage", "Thêm mã giảm giá thành công!");
+        discountRepo.save(discount);
         return "redirect:/discounts/hienThi";
     }
+
+    @GetMapping("/delete/{id}")
+    public String deleteDiscount(@PathVariable("id") String id) {
+        discountRepo.deleteById(id);
+        return "redirect:/discounts/hienThi";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String editDiscount(@PathVariable("id") String id, Model model) {
+        Optional<Discounts> optional = discountRepo.findById(id);
+        if (optional.isPresent()) {
+            model.addAttribute("discount", optional.get());
+            model.addAttribute("discounts", discountRepo.findAll());
+            return "page/discount";
+        } else {
+            return "redirect:/discounts/hienThi";
+        }
+    }
+
 
     @PostMapping("/update")
-    public String update(@Valid Discounts discount,
-                         BindingResult result,
-                         RedirectAttributes ra,
-                         Model model,
-                         @RequestParam(defaultValue = "0") int page,
-                         @RequestParam(defaultValue = "5") int size) {
-
+    public String updateDiscount(@Valid @ModelAttribute("discount") Discounts discount,
+                                 BindingResult result, Model model) {
         if (result.hasErrors()) {
-            Pageable pageable = PageRequest.of(page, size, Sort.by("id").descending());
-            Page<Discounts> pageDiscounts = discountsRepo.findAll(pageable);
-            model.addAttribute("listDiscounts", pageDiscounts.getContent());
-            model.addAttribute("totalPages", pageDiscounts.getTotalPages());
-            model.addAttribute("currentPage", page);
-            model.addAttribute("errorMessage", "Cập nhật mã giảm giá thất bại.");
-            return "/page/discounts";
+            model.addAttribute("discounts", discountRepo.findAll());
+            return "page/discount";
         }
-
-        discountsRepo.save(discount);
-        ra.addFlashAttribute("successMessage", "Cập nhật mã giảm giá thành công!");
+        discountRepo.save(discount);
         return "redirect:/discounts/hienThi";
     }
 
-    @GetMapping("/delete")
-    public String delete(@RequestParam("id") Integer id, RedirectAttributes ra) {
-        Discounts discount = discountsRepo.findById(id).orElse(null);
-        if (discount != null) {
-            discountsRepo.deleteById(id);
-            ra.addFlashAttribute("successMessage", "Đã xoá mã giảm giá!");
-        } else {
-            ra.addFlashAttribute("errorMessage", "Không tìm thấy mã để xoá!");
-        }
-        return "redirect:/discounts/hienThi";
-    }
 }
+
+

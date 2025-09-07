@@ -21,7 +21,7 @@ public class Discounts {
     private String id;
     @Column(name = "discount_value")
     @NotNull(message = "Không được bỏ trống")
-    private Integer discountName;
+    private Integer discountValue;
     @Column(name = "discount_type")
     @NotBlank(message = "Không được để trống")
     private String discountType;

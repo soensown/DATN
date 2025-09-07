@@ -1,158 +1,117 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en" xmlns:th="">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <title>Discounts</title>-->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Quản lý mã giảm giá</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
 
-<!--    &lt;!&ndash; Bootstrap 5.3 &ndash;&gt;-->
-<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">-->
-<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>-->
-<!--</head>-->
-<!--<body>-->
-<!--<nav th:replace="~{/header/Navbar}"></nav>-->
+    <h2 class="mb-4 text-center">Danh sách mã giảm giá</h2>
 
-<!--<div class="container py-4 d-flex justify-content-center">-->
-<!--    <div class="col-lg-8" style="padding-top: 100px">-->
-<!--        <div class="card shadow">-->
-<!--            <div class="p-3">-->
-<!--                <form action="/discounts/search" method="get" class="d-flex">-->
-<!--                    <input type="text" class="form-control me-2" name="type" placeholder="Tìm kiếm mã giảm giá...">-->
-<!--                    <button type="submit" class="btn btn-outline-success">Tìm kiếm</button>-->
-<!--                </form>-->
-<!--            </div>-->
+    <!-- FORM TÌM KIẾM -->
+    <form th:action="@{/discounts/hienThi}" method="get" class="mb-4 d-flex justify-content-end">
+        <input type="text" name="keyword" class="form-control w-25 me-2"
+               placeholder="Tìm theo mã hoặc mô tả" th:value="${keyword}">
+        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+    </form>
 
-<!--            <div class="card-header bg-success text-white">-->
-<!--                <h5 class="mb-0">Thêm Mã giảm giá</h5>-->
-<!--            </div>-->
+    <!-- FORM THÊM MỚI / CHỈNH SỬA -->
+    <form th:action="@{${discount.id} != null ? '/discounts/update' : '/discounts/add'}"
+          th:object="${discount}" method="post"
+          class="border p-4 rounded mb-5 shadow-sm bg-light">
+        <h4 class="mb-3" th:text="${discount.id} != null ? 'Chỉnh sửa mã giảm giá' : 'Thêm mã giảm giá mới'"></h4>
 
-<!--            <form action="/discounts/add" method="post" class="card-body needs-validation" novalidate>-->
-<!--                <div class="mb-3">-->
-<!--                    <label class="form-label">Tên Màu</label>-->
-<!--                    <input type="text" class="form-control" name="colorName" required>-->
-<!--                    <div class="invalid-feedback">Vui lòng nhập tên màu.</div>-->
-<!--                </div>-->
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Mã giảm giá</label>
+                <input type="text" th:field="*{id}" class="form-control"
+                       th:readonly="${discount.id} != null">
+                <div class="text-danger" th:if="${#fields.hasErrors('id')}" th:errors="*{id}"></div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Giá trị</label>
+                <input type="number" th:field="*{discountValue}" class="form-control">
+                <div class="text-danger" th:if="${#fields.hasErrors('discountValue')}" th:errors="*{discountValue}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Loại giảm giá</label>
+                <select th:field="*{discountType}" class="form-select">
+                    <option value="">-- Chọn loại giảm giá --</option>
+                    <option value="percent">Phần trăm (%)</option>
+                    <option value="fixed">Tiền mặt (VNĐ)</option>
+                </select>
+                <div class="text-danger" th:if="${#fields.hasErrors('discountType')}" th:errors="*{discountType}"></div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Ngày bắt đầu</label>
+                <input type="date" th:field="*{startDate}" class="form-control">
+                <div class="text-danger" th:if="${#fields.hasErrors('startDate')}" th:errors="*{startDate}"></div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">Ngày kết thúc</label>
+                <input type="date" th:field="*{endDate}" class="form-control">
+                <div class="text-danger" th:if="${#fields.hasErrors('endDate')}" th:errors="*{endDate}"></div>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">Trạng thái</label>
+                <select th:field="*{status}" class="form-select">
+                    <option value="">-- Chọn trạng thái --</option>
+                    <option value="Đang hoạt động">Đang hoạt động</option>
+                    <option value="Ngừng hoạt động">Ngừng hoạt động</option>
+                </select>
+                <div class="text-danger" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Điều kiện áp dụng</label>
+                <input type="number" th:field="*{condition}" class="form-control">
+                <div class="text-danger" th:if="${#fields.hasErrors('condition')}" th:errors="*{condition}"></div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Mô tả</label>
+                <textarea th:field="*{description}" class="form-control"></textarea>
+                <div class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></div>
+            </div>
+        </div>
 
-<!--                <div class="mb-3">-->
-<!--                    <label class="form-label">Mã Màu</label>-->
-<!--                    <input type="text" class="form-control" name="colorCode" required>-->
-<!--                    <div class="invalid-feedback">Vui lòng nhập mã màu.</div>-->
-<!--                </div>-->
+        <button type="submit" class="btn btn-success"
+                th:text="${discount.id} != null ? 'Cập nhật' : 'Thêm mới'"></button>
+        <a th:href="@{/discounts/hienThi}" class="btn btn-secondary">Làm mới</a>
+    </form>
 
-<!--                <div class="d-flex justify-content-end gap-2">-->
-<!--                    <button type="submit" class="btn btn-success">Lưu</button>-->
-<!--                </div>-->
-<!--            </form>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
-
-<!--<div class="container" style="padding-top: 100px">-->
-<!--    <table class="table table-hover align-middle">-->
-<!--        <thead class="table-light">-->
-<!--        <tr>-->
-<!--            <th>ID</th>-->
-<!--            <th>Tên màu</th>-->
-<!--            <th>Mã màu</th>-->
-<!--            <th>Xem</th>-->
-<!--            <th>Xóa</th>-->
-<!--            <th>Sửa</th>-->
-<!--        </tr>-->
-<!--        </thead>-->
-
-<!--        <tbody>-->
-<!--        <th:block th:each="colors : ${listColors}">-->
-<!--            <tr>-->
-<!--                <td th:text="${colors.id}"></td>-->
-<!--                <td th:text="${colors.colorName}"></td>-->
-<!--                <td th:text="${colors.colorCode}"></td>-->
-<!--                <td>-->
-<!--                    <span th:style="'display:inline-block;width:40px;height:20px;border:1px solid #ccc;background-color:' + (${colors.colorCode.startsWith('#') ? colors.colorCode : '#' + colors.colorCode})"></span>-->
-<!--                </td>-->
-<!--                <td>-->
-<!--                    <a th:href="@{'/colors/delete?id=' + ${colors.id}}"-->
-<!--                       class="btn btn-danger btn-sm">Delete</a>-->
-<!--                </td>-->
-<!--                <td>-->
-
-<!--                    <button type="button"-->
-<!--                            class="btn btn-warning btn-sm text-white"-->
-<!--                            data-bs-toggle="modal"-->
-<!--                            data-bs-target="#editModal"-->
-<!--                            th:attr="data-id=${colors.id},-->
-<!--                                     data-name=${colors.colorName},-->
-<!--                                     data-code=${discound.colorCode}">-->
-<!--                        Update-->
-<!--                    </button>-->
-<!--                </td>-->
-<!--            </tr>-->
-<!--        </th:block>-->
-<!--        </tbody>-->
-<!--    </table>-->
-<!--</div>-->
-
-
-
-<!--<div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">-->
-<!--    <div class="modal-dialog modal-dialog-centered">-->
-<!--        <div class="modal-content">-->
-<!--            <form action="/colors/update" method="post" >-->
-<!--                <div class="modal-header">-->
-<!--                    <h5 class="modal-title">Chỉnh sửa màu</h5>-->
-<!--                    <button type="button" class="btn-close" data-bs-dismiss="modal"-->
-<!--                            aria-label="Close"></button>-->
-<!--                </div>-->
-
-<!--                <div class="modal-body">-->
-
-<!--                    <input type="hidden" name="id" id="colorId">-->
-
-<!--                    <div class="mb-3">-->
-<!--                        <label class="form-label">Tên màu</label>-->
-<!--                        <input type="text" class="form-control" name="colorName" id="colorName" required>-->
-<!--                    </div>-->
-
-<!--                    <div class="mb-3">-->
-<!--                        <label class="form-label">Mã màu</label>-->
-<!--                        <input type="text" class="form-control" name="colorCode" id="colorCode" required>-->
-<!--                    </div>-->
-<!--                </div>-->
-
-<!--                <div class="modal-footer">-->
-<!--                    <button type="button" class="btn btn-secondary"-->
-<!--                            data-bs-dismiss="modal">Hủy</button>-->
-<!--                    <button type="submit" class="btn btn-success">Lưu</button>-->
-<!--                </div>-->
-<!--            </form>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--</div>-->
-
-<!--<script>-->
-<!--    const editModal = document.getElementById('editModal');-->
-<!--    editModal.addEventListener('show.bs.modal', event => {-->
-<!--        const button = event.relatedTarget;-->
-<!--        document.getElementById('colorId').value   = button.getAttribute('data-id');-->
-<!--        document.getElementById('colorName').value = button.getAttribute('data-name');-->
-<!--        document.getElementById('colorCode').value = button.getAttribute('data-code');-->
-<!--    });-->
-<!--</script>-->
-
-<!--&lt;!&ndash; Validate Bootstrap &ndash;&gt;-->
-<!--<script>-->
-<!--    (() => {-->
-<!--        'use strict';-->
-<!--        const forms = document.querySelectorAll('.needs-validation');-->
-<!--        Array.from(forms).forEach(form => {-->
-<!--            form.addEventListener('submit', event => {-->
-<!--                if (!form.checkValidity()) {-->
-<!--                    event.preventDefault();-->
-<!--                    event.stopPropagation();-->
-<!--                }-->
-<!--                form.classList.add('was-validated');-->
-<!--            }, false);-->
-<!--        });-->
-<!--    })();-->
-<!--</script>-->
-
-<!--</body>-->
-<!--</html>-->
+    <!-- DANH SÁCH MÃ GIẢM GIÁ -->
+    <table class="table table-bordered table-hover">
+        <thead class="table-primary text-center">
+        <tr>
+            <th>Mã</th>
+            <th>Giá trị</th>
+            <th>Loại</th>
+            <th>Ngày bắt đầu</th>
+            <th>Ngày kết thúc</th>
+            <th>Trạng thái</th>
+            <th>Điều kiện</th>
+            <th>Mô tả</th>
+            <th>Hành động</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="d : ${discounts}">
+            <td th:text="${d.id}"></td>
+            <td th:text="${d.discountValue} + (d.discountType == 'percent' ? '%' : 'đ')"></td>
+            <td th:text="${d.discountType}"></td>
+            <td th:text="${#dates.format(d.startDate, 'dd/MM/yyyy')}"></td>
+            <td th:text="${#dates.format(d.endDate, 'dd/MM/yyyy')}"></td>
+            <td th:text="${d.status}"></td>
+            <td th:text="${d.condition}"></td>
+            <td th:text="${d.description}"></td>
+            <td class="text-center">
+                <a th:href="@{'/discounts/edit/' + ${d.id}}" class="btn btn-warning btn-sm">Chỉnh sửa</a>
+                <a th:href="@{'/discounts/delete/' + ${d.id}}" class="btn btn-danger btn-sm"
+                   onclick="return confirm('Bạn có chắc chắn muốn xóa mã này?')">Xóa</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

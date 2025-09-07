@@ -1,8 +1,10 @@
 package com.example.datn.Controller;
 
+import com.example.datn.Model.Discounts;
 import com.example.datn.Model.ProductDetails;
 
 import com.example.datn.Model.Products;
+import com.example.datn.repository.discountsRepository;
 import com.example.datn.repository.product_detailsRepository;
 import com.example.datn.repository.productsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,8 @@ public class ServiceController {
     private product_detailsRepository productDetailsRepository;
     @Autowired
     private productsRepository productsRepository;
+    @Autowired
+    private discountsRepository discountsRepo;
     @GetMapping
     public String home(Model model) {
         List<Products> productList = productsRepository.findTop10ByOrderByCreatedDateDesc();
@@ -64,6 +68,8 @@ public class ServiceController {
     public String showPOS(Model model) {
         List<ProductDetails> productDetails = productDetailsRepository.findAll();
         model.addAttribute("productDetails", productDetails);
+        List<Discounts> discounts = discountsRepo.findAllValidDiscounts();
+        model.addAttribute("discounts", discounts);
         return "/page/pos";
     }
     @GetMapping("/overview")
