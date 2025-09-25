@@ -5,113 +5,191 @@
     <title>Bán hàng tại quầy</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            min-height: 100vh;
-        }
-
-
-
-        .main-content {
-            margin-left: 250px;
-            padding: 40px;
-            width: calc(100% - 250px);
-        }
-
-
-        #productDropdown {
-            max-height: 300px;
-            overflow-y: auto;
-        }
+        body { margin: 0; padding: 0; display: flex; min-height: 100vh; }
+        .main-content { margin-left: 250px; padding: 40px; width: calc(100% - 250px); }
+        #productDropdown { max-height: 300px; overflow-y: auto; }
     </style>
 </head>
 <body>
 
-<!-- Sidebar -->
 <div class="sidebar" th:replace="~{/header/sideBar}"></div>
 
-<!-- Main content -->
-<div class="main-content">
+<div class="container-fluid main-content">
+    <div class="row">
+        <!-- ========== CỘT TRÁI: SẢN PHẨM + GIỎ HÀNG ========== -->
+        <div class="col-lg-8 col-md-7">
 
-    <h2 class="mb-4">Bán hàng theo chi tiết</h2>
+            <!-- Tìm kiếm sản phẩm -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-success text-white">
+                    <strong>Thêm sản phẩm</strong>
+                </div>
+                <div class="card-body">
+                    <form id="addProductForm" class="row g-3 position-relative">
+                        <div class="col-md-8 position-relative">
+                            <input type="text" id="productSearch" class="form-control" placeholder="Nhập tên hoặc mã sản phẩm...">
+                            <ul id="productDropdown" class="list-group position-absolute w-100" style="z-index: 1000;"></ul>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="number" id="quantity" class="form-control" value="1" min="1" placeholder="SL">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-success w-100" onclick="addProduct()">Thêm</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
 
-    <!-- Thông báo thành công -->
-    <div th:if="${session.successMessage}" class="alert alert-success" th:text="${session.successMessage}"></div>
-
-    <!-- Tìm kiếm sản phẩm -->
-    <form id="addProductForm" class="row g-3 mb-3 position-relative">
-        <div class="col-md-8 position-relative">
-            <input type="text" id="productSearch" class="form-control" placeholder="Nhập tên hoặc mã sản phẩm...">
-            <ul id="productDropdown" class="list-group position-absolute w-100" style="z-index: 1000;"></ul>
+            <!-- Giỏ hàng -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <strong>Giỏ hàng</strong>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-bordered mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Mã</th>
+                            <th>Sản phẩm</th>
+                            <th>Đơn giá</th>
+                            <th>SL</th>
+                            <th>Tổng</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody id="cartBody"></tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        <div class="col-md-2">
-            <input type="number" id="quantity" class="form-control" value="1" min="1" placeholder="Số lượng">
-        </div>
-        <div class="col-md-2">
-            <button type="button" class="btn btn-success w-100" onclick="addProduct()">Thêm</button>
-        </div>
-    </form>
 
-    <!-- Giỏ hàng -->
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>Mã</th>
-            <th>Sản phẩm</th>
-            <th>Đơn giá</th>
-            <th>Số lượng</th>
-            <th>Tổng</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody id="cartBody"></tbody>
-    </table>
+        <!-- ========== CỘT PHẢI: KHÁCH HÀNG + THANH TOÁN ========== -->
+        <div class="col-lg-4 col-md-5">
 
-    <!-- Thanh toán -->
-    <div class="row mt-4">
-        <div class="col-md-4">
-            <label>Tiền khách đưa:</label>
-            <input type="number" id="amountPaid" class="form-control" placeholder="Nhập số tiền khách đưa">
-        </div>
+            <!-- Chọn khách hàng -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-info text-white">
+                    <strong>Khách hàng</strong>
+                </div>
+                <div class="card-body">
+                    <!-- Form tìm khách -->
+                    <form method="get" action="/pos" class="mb-3">
+                        <div class="input-group">
+                            <input type="text" name="phone" id="phoneSearch"
+                                   class="form-control"
+                                   pattern="[0-9]{9,11}"
+                                   title="Số điện thoại phải từ 9 đến 11 chữ số"
+                                   required
+                                   placeholder="Nhập số điện thoại khách hàng..." />
 
-        <div class="col-md-4">
-            <label>Tiền thừa:</label>
-            <input type="text" id="change" class="form-control" readonly>
-        </div>
-        <select id="discountSelect" class="form-control">
-            <option value="0" data-type="none">Không áp dụng</option>
-            <option th:each="d : ${discounts}"
-                    th:value="${d.discountValue}"
-                    th:data-type="${d.discountType}"
-                    th:text="${d.description + ' (' + (d.discountType == 'Percentage' ? d.discountValue + '%' : d.discountValue + 'đ') + ')'}">
-            </option>
-        </select>
+                            <button type="submit" class="btn btn-primary">Tìm</button>
+                        </div>
+                    </form>
 
-        <div class="col-md-4 text-end">
-            <h4>Tổng tiền: <span id="totalPrice">0</span> đ</h4>
-            <form id="checkoutForm" method="post" action="/pos/checkout" onsubmit="return prepareCheckout()">
-                <input type="hidden" name="cartData" id="cartDataInput">
-                <input type="hidden" name="totalPrice" id="totalPriceInput">
-                <input type="hidden" name="amountPaid" id="amountPaidInput">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-                <button type="submit" class="btn btn-primary mt-2">Thanh toán</button>
-            </form>
-            <button class="btn btn-secondary mt-2" onclick="clearCart()">Hủy</button>
+                    <!-- Thông báo nếu không tìm thấy -->
+                    <div th:if="${notFoundPhone}" class="alert alert-warning">
+                        Không tìm thấy khách có số điện thoại
+                        <span th:text="${notFoundPhone}"></span>.
+                        <button type="button" class="btn btn-sm btn-success" onclick="showNewCustomerForm()">+ Thêm khách hàng mới</button>
+                    </div>
+
+                    <!-- Select khách hàng -->
+                    <label class="form-label">Chọn khách:</label>
+                    <select id="customerSelect" class="form-control mb-2">
+                        <option value="USER003" th:selected="${customer == null}">Khách lẻ</option>
+                        <option th:each="c : ${customers}"
+                                th:value="${c.id}"
+                                th:selected="${customer != null and customer.id == c.id}"
+                                th:text="${c.fullName + ' - ' + c.phoneNumber}">
+                        </option>
+                    </select>
+
+                    <button type="button" class="btn btn-outline-primary w-100" onclick="showNewCustomerForm()">+ Khách hàng mới</button>
+
+                    <!-- Form khách hàng mới -->
+                    <div id="newCustomerForm" class="card p-3 mt-3" style="display:none;">
+                        <h6 class="text-primary">Thêm khách hàng mới</h6>
+                        <div class="row g-2">
+                            <div class="col-md-12">
+                                <input type="text" id="newFullName" class="form-control" placeholder="Họ tên">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" id="newPhone" class="form-control" placeholder="Số điện thoại">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="text" id="newAddress" class="form-control" placeholder="Địa chỉ">
+                            </div>
+                        </div>
+                        <div class="mt-2 text-end">
+                            <button type="button" class="btn btn-success" onclick="addNewCustomerLocal()">Thêm</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Thanh toán -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning">
+                    <strong>Thanh toán</strong>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label>Tiền khách đưa:</label>
+                        <input type="number" id="amountPaid" class="form-control" placeholder="Nhập số tiền khách đưa">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Tiền thừa:</label>
+                        <input type="text" id="change" class="form-control" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Khuyến mãi:</label>
+                        <select id="discountSelect" class="form-control">
+                            <option value="">Không áp dụng</option>
+                            <option th:each="d : ${discounts}"
+                                    th:value="${d.id}"
+                                    th:data-value="${d.discountValue}"
+                                    th:data-type="${d.discountType}"
+                                    th:text="${d.description + ' (' + (d.discountType == 'Percentage' ? d.discountValue + '%' : d.discountValue + 'đ') + ')'}">
+                            </option>
+                        </select>
+                    </div>
+
+                    <h4 class="text-end text-danger mb-3">
+                        Tổng tiền: <span id="totalPrice">0</span> đ
+                    </h4>
+
+                    <form id="checkoutForm" method="post" action="/pos/checkout" onsubmit="return prepareCheckout()">
+                        <input type="hidden" name="cartData" id="cartDataInput">
+                        <input type="hidden" name="totalPrice" id="totalPriceInput">
+                        <input type="hidden" name="amountPaid" id="amountPaidInput">
+                        <input type="hidden" name="idDiscount" id="idDiscountInput">
+
+                        <!-- Thêm khách hàng -->
+                        <input type="hidden" name="customerId" id="customerIdInput" />
+                        <input type="hidden" name="newFullName" id="newFullNameInput" />
+                        <input type="hidden" name="newPhone" id="newPhoneInput" />
+                        <input type="hidden" name="newAddress" id="newAddressInput" />
+
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                        <button type="submit" class="btn btn-primary w-100">Thanh toán</button>
+                    </form>
+                    <button class="btn btn-secondary w-100 mt-2" onclick="clearCart()">Hủy giỏ hàng</button>
+                </div>
+            </div>
         </div>
     </div>
-
 </div>
 
 <script th:inline="javascript">
-
     let cart = [];
-
     let productDetails = /*[[${productDetails}]]*/ [];
     const parsedProducts = productDetails.map(pd => ({
         id: pd.id,
@@ -119,16 +197,66 @@
         price: pd.product.discountPrice != null ? pd.product.discountPrice : pd.product.unitPrice
     }));
 
+    function addNewCustomerLocal() {
+        const fullName = $('#newFullName').val().trim();
+        const phone = $('#newPhone').val().trim();
+        const address = $('#newAddress').val().trim();
+
+        if (!fullName || !phone) {
+            alert(" Vui lòng nhập họ tên và số điện thoại!");
+            return;
+        }
+
+        const newId = "NEW_" + Date.now();
+        const newText = fullName + " - " + phone;
+
+        const newOption = new Option(newText, newId, true, true);
+        $('#customerSelect').append(newOption).trigger('change');
+
+        $('#newFullNameInput').val(fullName);
+        $('#newPhoneInput').val(phone);
+        $('#newAddressInput').val(address);
+
+        $('#newCustomerForm').hide();
+        $('#newFullName').val('');
+        $('#newPhone').val('');
+        $('#newAddress').val('');
+
+
+        alert("Đã thêm khách hàng mới: " + newText);
+    }
+
+
+    function showNewCustomerForm() { $('#newCustomerForm').toggle(); }
+
+    function saveCart() { localStorage.setItem("cartData", JSON.stringify(cart)); }
+    function loadCart() {
+        const saved = localStorage.getItem("cartData");
+        if (saved) { cart = JSON.parse(saved); renderCart(); }
+    }
+
     $(document).ready(function () {
+        if ($.fn.select2) {
+            $('#customerSelect').select2({
+                placeholder: 'Tìm khách bằng số điện thoại hoặc tên',
+                width: '100%'
+            });
+        }
+        $('#customerSelect').on('change', function () {
+            let customerId = $(this).val();
+            if (!customerId || customerId.trim() === "") customerId = "USER003";
+            $('#customerIdInput').val(customerId);
+        });
+        let initCustomerId = $('#customerSelect').val();
+        if (!initCustomerId || initCustomerId.trim() === "") initCustomerId = "USER003";
+        $('#customerIdInput').val(initCustomerId);
+
         $('#productSearch').on('input', function () {
             const keyword = $(this).val().toLowerCase();
             const filtered = parsedProducts.filter(p =>
                 p.name.toLowerCase().includes(keyword) || p.id.toLowerCase().includes(keyword)
             );
-
-            const dropdown = $('#productDropdown');
-            dropdown.empty();
-
+            const dropdown = $('#productDropdown'); dropdown.empty();
             if (keyword && filtered.length > 0) {
                 filtered.forEach(p => {
                     dropdown.append(`<li class="list-group-item list-group-item-action"
@@ -137,36 +265,21 @@
                     </li>`);
                 });
                 dropdown.show();
-            } else {
-                dropdown.hide();
-            }
+            } else { dropdown.hide(); }
         });
 
-        $('#discountSelect').on('change', function() {
-            renderCart();
-        });
-
-        $('#amountPaid').on('input', function() {
-            this.value = this.value.replace(/[.,]/g, "");
-        });
+        $('#discountSelect').on('change', function() { renderCart(); });
+        $('#amountPaid').on('input', function() { this.value = this.value.replace(/[.,]/g, ""); });
 
         $('#productDropdown').on('click', 'li', function () {
-            const id = $(this).data('id');
-            const name = $(this).data('name');
-            const price = parseFloat($(this).data('price'));
-
-            $('#productSearch').val(name);
-            $('#productSearch').data('selected-id', id);
-            $('#productSearch').data('selected-name', name);
-            $('#productSearch').data('selected-price', price);
+            const id = $(this).data('id'); const name = $(this).data('name'); const price = parseFloat($(this).data('price'));
+            $('#productSearch').val(name).data('selected-id', id).data('selected-name', name).data('selected-price', price);
             $('#productDropdown').hide();
         });
+        $(document).click(function (e) { if (!$(e.target).closest('#productSearch').length) { $('#productDropdown').hide(); } });
 
-        $(document).click(function (e) {
-            if (!$(e.target).closest('#productSearch').length) {
-                $('#productDropdown').hide();
-            }
-        });
+
+        loadCart();
     });
 
     function addProduct() {
@@ -174,94 +287,118 @@
         const name = $('#productSearch').data('selected-name');
         const price = parseFloat($('#productSearch').data('selected-price'));
         const quantity = parseInt($('#quantity').val());
-
         if (!id || quantity <= 0) return;
-
         const existing = cart.find(p => p.id === id);
-        if (existing) {
-            existing.quantity += quantity;
-        } else {
-            cart.push({id, name, price, quantity});
-        }
-
-        renderCart();
-        $('#productSearch').val('').removeData();
-        $('#quantity').val(1);
+        if (existing) { existing.quantity += quantity; } else { cart.push({id, name, price, quantity}); }
+        renderCart(); saveCart();
+        $('#productSearch').val('').removeData(); $('#quantity').val(1);
     }
 
     function renderCart() {
-        const tbody = $('#cartBody');
-        tbody.empty();
-        let total = 0;
-
+        const tbody = $('#cartBody'); tbody.empty(); let total = 0;
         cart.forEach(p => {
-            const subtotal = p.price * p.quantity;
-            total += subtotal;
-            tbody.append(`
-            <tr>
-                <td>${p.id}</td>
-                <td>${p.name}</td>
+            const subtotal = p.price * p.quantity; total += subtotal;
+            tbody.append(`<tr>
+                <td>${p.id}</td><td>${p.name}</td>
                 <td>${p.price.toLocaleString('vi-VN')}</td>
                 <td>${p.quantity}</td>
                 <td>${subtotal.toLocaleString('vi-VN')}</td>
                 <td><button class="btn btn-danger btn-sm" onclick="removeProduct('${p.id}')">X</button></td>
-            </tr>
-        `);
+            </tr>`);
         });
-
-        
-        const discountValue = parseFloat($('#discountSelect').val());
+        const discountValue = parseFloat($('#discountSelect option:selected').data('value')) || 0;
         const discountType = $('#discountSelect option:selected').data('type');
-
         let finalTotal = total;
         if (discountValue > 0) {
-            if (discountType === 'Percentage') {
-                finalTotal = total - (total * discountValue / 100);
-            } else if (discountType === 'Fixed') {
-                finalTotal = total - discountValue;
-            }
+            if (discountType === 'Percentage') { finalTotal = total - (total * discountValue / 100); }
+            else if (discountType === 'Fixed') { finalTotal = total - discountValue; }
         }
-
         if (finalTotal < 0) finalTotal = 0;
-
-        $('#totalPrice').text(finalTotal.toLocaleString('vi-VN'));
-        $('#change').val('');
+        $('#totalPrice').text(finalTotal.toLocaleString('vi-VN')); $('#change').val('');
     }
-
 
     function removeProduct(id) {
         cart = cart.filter(p => p.id !== id);
-        renderCart();
+        renderCart(); saveCart();
     }
 
     function prepareCheckout() {
         const total = cart.reduce((sum, p) => sum + p.price * p.quantity, 0);
+        const discountId = $('#discountSelect').val();
+        const discountValue = parseFloat($('#discountSelect option:selected').data('value')) || 0;
+        const discountType = $('#discountSelect option:selected').data('type');
+        let finalTotal = total;
+        if (discountValue > 0) {
+            if (discountType === 'Percentage') { finalTotal = total - (total * discountValue / 100); }
+            else if (discountType === 'Fixed') { finalTotal = total - discountValue; }
+        }
+        if (finalTotal < 0) finalTotal = 0;
         const amountPaid = parseFloat($('#amountPaid').val());
+        if (isNaN(amountPaid) || amountPaid < finalTotal) { alert("Tiền khách đưa không đủ!"); return false; }
 
-        if (isNaN(amountPaid) || amountPaid < total) {
-            alert("❌ Tiền khách đưa không đủ!");
-            return false;
+        let customerId = $('#customerSelect').val();
+        if (!customerId || customerId.trim() === "") { customerId = "USER003"; }
+        $('#customerIdInput').val(customerId);
+
+        if ($('#newCustomerForm').is(':visible')) {
+            const newFullName = $('#newFullName').val() || '';
+            const newPhone = $('#newPhone').val() || '';
+            const newAddress = $('#newAddress').val() || '';
+            if (!newFullName.trim() || !newPhone.trim()) { alert("Vui lòng nhập Họ tên và SĐT cho khách hàng mới."); return false; }
+            $('#newFullNameInput').val(newFullName);
+            $('#newPhoneInput').val(newPhone);
+            $('#newAddressInput').val(newAddress);
+        } else {
+            $('#newFullNameInput').val(''); $('#newPhoneInput').val(''); $('#newAddressInput').val('');
         }
 
-        const cartString = cart.map(p =>
-            `${p.id}|${p.name}|${p.price}|${p.quantity}`
-        ).join(";");
-
+        const cartString = cart.map(p => `${p.id}|${p.name}|${p.price}|${p.quantity}`).join(";");
         $('#cartDataInput').val(cartString);
-        $('#totalPriceInput').val(total.toFixed(2));
+        $('#totalPriceInput').val(finalTotal.toFixed(2));
         $('#amountPaidInput').val(amountPaid.toFixed(2));
+        $('#idDiscountInput').val(discountId);
+        const change = amountPaid - finalTotal; $('#change').val(change.toLocaleString('vi-VN'));
+        alert(" Thanh toán thành công! Tiền thừa: " + change.toLocaleString('vi-VN') + " đ");
 
-        const change = amountPaid - total;
-        $('#change').val(change.toLocaleString('vi-VN'));
 
+        localStorage.removeItem("cartData");
         return true;
     }
 
+    function addNewCustomerLocal() {
+        const fullName = $('#newFullName').val().trim();
+        const phone = $('#newPhone').val().trim();
+        const address = $('#newAddress').val().trim();
+
+        if (!fullName || !phone) {
+            alert("Vui lòng nhập họ tên và số điện thoại!");
+            return;
+        }
+
+        // tạo option mới cho select
+        const newId = "NEW_" + Date.now(); // id tạm để hiển thị
+        const newText = fullName + " - " + phone;
+
+        const newOption = new Option(newText, newId, true, true);
+        $('#customerSelect').append(newOption).trigger('change');
+
+        // gán hidden input để khi checkout sẽ gửi sang server
+        $('#newFullNameInput').val(fullName);
+        $('#newPhoneInput').val(phone);
+        $('#newAddressInput').val(address);
+
+        // clear form & ẩn đi
+        $('#newCustomerForm').hide();
+        $('#newFullName').val('');
+        $('#newPhone').val('');
+        $('#newAddress').val('');
+    }
+
+
     function clearCart() {
-        cart = [];
-        renderCart();
-        $('#amountPaid').val('');
-        $('#change').val('');
+        cart = []; renderCart();
+        $('#amountPaid').val(''); $('#change').val('');
+        localStorage.removeItem("cartData");
     }
 </script>
 

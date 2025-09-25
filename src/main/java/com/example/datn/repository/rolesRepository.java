@@ -1,7 +1,6 @@
 package com.example.datn.repository;
 
 import com.example.datn.Model.Roles;
-import com.example.datn.Model.Users;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

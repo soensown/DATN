@@ -23,7 +23,6 @@ public interface discountsRepository extends JpaRepository<Discounts, String> {
             "AND CURRENT_DATE BETWEEN d.startDate AND d.endDate")
     List<Discounts> findAllValidDiscounts();
 
-
     @Query("SELECT d FROM Discounts d WHERE d.status = 'active' AND CURRENT_DATE BETWEEN d.startDate AND d.endDate")
     List<Discounts> findValidDiscountsForProduct(@Param("productId") String productId);
 

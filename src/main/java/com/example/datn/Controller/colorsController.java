@@ -18,7 +18,7 @@ public class colorsController {
     @Autowired
     private colorsRepository colorsRepo;
 
-    // HIỂN THỊ MÀU + PHÂN TRANG
+
     @GetMapping("/hienThi")
     public String hienThi(Model model,
                           @RequestParam(defaultValue = "0") int page,
@@ -35,7 +35,7 @@ public class colorsController {
         return "/page/Coler";
     }
 
-    // TÌM KIẾM MÀU
+
     @GetMapping("/search")
     public String search(Model model, @RequestParam String tenORma) {
         if (tenORma == null || tenORma.trim().isEmpty()) {
@@ -56,7 +56,7 @@ public class colorsController {
         return "/page/Coler";
     }
 
-    // THÊM MÀU
+
     @PostMapping("/add")
     public String add(@ModelAttribute Colors color, RedirectAttributes ra) {
         if (color.getColorName() == null || color.getColorName().isBlank() ||
@@ -70,7 +70,7 @@ public class colorsController {
         return "redirect:/colors/hienThi";
     }
 
-    // CẬP NHẬT MÀU
+
     @PostMapping("/update")
     public String update(@ModelAttribute Colors color, RedirectAttributes ra) {
         if (color.getId() == null || !colorsRepo.existsById(color.getId())) {
@@ -89,7 +89,7 @@ public class colorsController {
         return "redirect:/colors/hienThi";
     }
 
-    // XOÁ MÀU
+
     @GetMapping("/delete")
     public String delete(@RequestParam Integer id, RedirectAttributes ra) {
         if (!colorsRepo.existsById(id)) {

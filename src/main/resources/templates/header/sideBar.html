@@ -45,27 +45,17 @@
 
     <ul class="nav nav-pills flex-column">
 
-        <!-- Template cho từng mục -->
         <li class="nav-item mb-2">
-            <a class="nav-link text-dark collapsed" data-bs-toggle="collapse" href="#menuHangHoa" role="button" aria-expanded="false">
-                <i class="bi bi-box"></i> Hàng Hóa
+            <a class="nav-link text-dark collapsed" href="/product_details/hienThi" role="button" aria-expanded="false">
+                <i class="bi bi-box"></i> Hàng Hóa và Nhập Hàng
             </a>
-            <div class="collapse submenu" id="menuHangHoa">
-                <a class="nav-link text-dark" href="/listProduct">Danh Sách Hàng Hóa</a>
-                <a class="nav-link text-dark" href="/product_details/hienThi">Nhập Hàng</a>
-            </div>
         </li>
-
         <li class="nav-item mb-2">
             <a class="nav-link text-dark collapsed" data-bs-toggle="collapse" href="#menuDonHang" role="button" aria-expanded="false">
                 <i class="bi bi-receipt"></i> Đơn Hàng
             </a>
             <div class="collapse submenu" id="menuDonHang">
-                <a class="nav-link text-dark" href="#">Đặt Hàng</a>
-                <a class="nav-link text-dark" href="#">Hóa Đơn</a>
-                <a class="nav-link text-dark" href="#">Trả Hàng</a>
-                <a class="nav-link text-dark" href="#">Đối Tác Giao Hàng</a>
-                <a class="nav-link text-dark" href="#">Vận Đơn</a>
+                <a class="nav-link text-dark" href="/orders">Hóa Đơn</a>
             </div>
         </li>
 
@@ -90,13 +80,8 @@
                 <i class="bi bi-bar-chart-line"></i> Phân Tích
             </a>
             <div class="collapse submenu" id="menuPhanTich">
-                <a class="nav-link text-dark" href="#">Cuối Ngày</a>
-                <a class="nav-link text-dark" href="#">Bán Hàng</a>
-                <a class="nav-link text-dark" href="#">Đặt Hàng</a>
                 <a class="nav-link text-dark" href="#">Hàng Hóa</a>
-                <a class="nav-link text-dark" href="#">Khách Hàng</a>
                 <hr>
-                <a class="nav-link text-dark" href="#">Nhà Cung Cấp</a>
                 <a class="nav-link text-dark" href="/staff/list">Nhân Viên</a>
             </div>
         </li>
@@ -113,12 +98,12 @@
             </a>
         </li>
 
-        <li class="nav-item mb-2">
-            <a href="#" class="nav-link text-dark">
-                <i class="bi bi-cash-coin"></i> Số Quỹ
-            </a>
-        </li>
 
+        <li class="nav-item mb-2">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="dropdown-item nav-link text-dark">Đăng Xuất</button>
+            </form>
+        </li>
     </ul>
 </div>
 

@@ -53,10 +53,8 @@ public class Products {
     @NotBlank(message = "Không được để trống")
     private String createdBy;
     @Column(name = "updated_date")
-    @NotNull(message = "Không được bỏ trống")
     private LocalDateTime updatedDate;
     @Column(name = "updated_by")
-    @NotBlank(message = "Không được để trống")
     private String updatedBy;
     @Column(name = "thumbnail")
     @NotBlank(message = "Không được để trống")

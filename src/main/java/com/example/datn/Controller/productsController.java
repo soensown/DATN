@@ -1,13 +1,13 @@
 package com.example.datn.Controller;
 
-import com.example.datn.Model.Colors;
 import com.example.datn.Model.ProductDetails;
 import com.example.datn.Model.Products;
-import com.example.datn.Model.Sizes;
 import com.example.datn.repository.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -81,7 +81,7 @@ public class productsController {
                       @RequestParam("created_by") String createdBy,
                       @RequestParam("thumbnail_file") MultipartFile thumbnailFile,
                       RedirectAttributes ra) {
-
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         try {
             String fileName = saveThumbnail(thumbnailFile);
 
@@ -96,9 +96,9 @@ public class productsController {
             product.setIsSpecial(isSpecial != null && isSpecial);
             product.setBrands(brandsRepo.findById(brandId).orElse(null));
             product.setWeight(weight != null ? new java.math.BigDecimal(weight) : null);
-            product.setCreatedBy(createdBy);
+            product.setCreatedBy(authentication.getName());
             product.setCreatedDate(new Date());
-            product.setUpdatedBy(createdBy);
+            product.setUpdatedBy(authentication.getName());
             product.setUpdatedDate(LocalDateTime.now());
             product.setThumbnail(fileName);
 
@@ -115,15 +115,13 @@ public class productsController {
     public String update(@ModelAttribute Products product,
                          @RequestParam(value = "thumbnail_file", required = false) MultipartFile thumbnailFile,
                          RedirectAttributes ra) {
-
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Products existing = productsRepo.findById(product.getId()).orElse(null);
         if (existing == null) {
             ra.addFlashAttribute("errorMessage", "Không tìm thấy sản phẩm!");
             return "redirect:/products/hienThi";
         }
-
         try {
-
             existing.setProductName(product.getProductName());
             existing.setDescription(product.getDescription());
             existing.setUnitPrice(product.getUnitPrice());
@@ -134,7 +132,7 @@ public class productsController {
             existing.setCategories(product.getCategories());
             existing.setWeight(product.getWeight());
             existing.setUpdatedDate(LocalDateTime.now());
-            existing.setUpdatedBy("USER001");
+            existing.setUpdatedBy(authentication.getName());
             
             if (thumbnailFile != null && !thumbnailFile.isEmpty()) {
                 deleteThumbnailFile(existing.getThumbnail());

@@ -4,14 +4,14 @@ import com.example.datn.Model.Discounts;
 import com.example.datn.Model.ProductDetails;
 
 import com.example.datn.Model.Products;
-import com.example.datn.repository.discountsRepository;
-import com.example.datn.repository.product_detailsRepository;
-import com.example.datn.repository.productsRepository;
+import com.example.datn.Model.Users;
+import com.example.datn.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.*;
 import java.text.NumberFormat;
@@ -25,6 +25,10 @@ public class ServiceController {
     private productsRepository productsRepository;
     @Autowired
     private discountsRepository discountsRepo;
+    @Autowired
+    private usersRepository usersRepository;
+    @Autowired
+    private rolesRepository rolesRepository;
     @GetMapping
     public String home(Model model) {
         List<Products> productList = productsRepository.findTop10ByOrderByCreatedDateDesc();
@@ -53,6 +57,7 @@ public class ServiceController {
         model.addAttribute("listProduct", formattedProducts);
         return "/page/home";
     }
+
     @GetMapping("/DirectSales")
     public String DirectSales(Model model){
         model.addAttribute("newOrders", 57);
@@ -65,13 +70,33 @@ public class ServiceController {
         return "/page/DirectSales";
     }
     @GetMapping("/pos")
-    public String showPOS(Model model) {
+    public String showPOS(Model model,
+                          @RequestParam(value = "phone", required = false) String phone) {
+
+        if (phone != null && !phone.isEmpty()) {
+            Optional<Users> customer = usersRepository.findByPhoneNumberAndRole(
+                    phone, rolesRepository.getById("ROLE002")
+            );
+            if (customer.isPresent()) {
+                model.addAttribute("customer", customer.get());
+            } else {
+                model.addAttribute("notFoundPhone", phone);
+            }
+        }
+
         List<ProductDetails> productDetails = productDetailsRepository.findAll();
         model.addAttribute("productDetails", productDetails);
+
         List<Discounts> discounts = discountsRepo.findAllValidDiscounts();
         model.addAttribute("discounts", discounts);
+
+        List<Users> customers = usersRepository.findByRole_Id("ROLE002");
+        model.addAttribute("customers", customers);
+
         return "/page/pos";
     }
+
+
     @GetMapping("/overview")
     public String overview(Model model){
         model.addAttribute("newOrders", 57);

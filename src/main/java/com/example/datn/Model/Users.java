@@ -19,16 +19,14 @@ public class Users {
     @Column(name = "user_id")
     private String id;
 
-    @NotBlank(message = "Không được để trống")
     private String username;
 
-    @NotBlank(message = "Không được để trống")
     private String password;
 
     @NotBlank(message = "Không được để trống")
     private String fullName;
 
-    @NotBlank(message = "Không được để trống")
+
     private String email;
 
     @NotBlank(message = "Không được để trống")
@@ -55,6 +53,6 @@ public class Users {
     private String updatedBy;
 
     @ManyToOne
-    @JoinColumn(name = "role_id", referencedColumnName = "role_id")
+    @JoinColumn(name = "role_id")
     private Roles role;
 }
