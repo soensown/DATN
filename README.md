@@ -1,7 +1,7 @@
 
 USE CommercialWebsite
 GO
-/****** Object:  Table [dbo].[brands]    Script Date: 7/4/2025 11:48:31 PM ******/
+
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
